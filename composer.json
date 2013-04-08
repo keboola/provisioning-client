@@ -1,0 +1,11 @@
+{
+	"name": "keboola/provisioning-client",
+	"description": "Keboola Provisioning Client",
+	"homepage": "http://keboola.com",
+	"autoload": {
+        "psr-0": {"Keboola\\Provisioning\\Client": "src/"}
+    },
+	"require": {
+		"symfony/process": "2.2.*@dev"
+	}
+}
