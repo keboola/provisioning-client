@@ -3,35 +3,30 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a3851f65eaeed39c0e8c4942eabeeaa7",
+    "hash": "7a0e51ae94ffb24d6e4f95ee73d1a3bc",
     "packages": [
         {
             "name": "symfony/process",
-            "version": "2.2.x-dev",
+            "version": "2.1.x-dev",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "ea29a7ff4f89dc9e918b7ab4964fee553e46a354"
+                "reference": "db29a04c9b3a3a8f3afcb1a498b8855d6329db0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/ea29a7ff4f89dc9e918b7ab4964fee553e46a354",
-                "reference": "ea29a7ff4f89dc9e918b7ab4964fee553e46a354",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/db29a04c9b3a3a8f3afcb1a498b8855d6329db0c",
+                "reference": "db29a04c9b3a3a8f3afcb1a498b8855d6329db0c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.2-dev"
-                }
-            },
             "autoload": {
                 "psr-0": {
-                    "Symfony\\Component\\Process\\": ""
+                    "Symfony\\Component\\Process": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -50,7 +45,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2013-04-07 20:19:55"
+            "time": "2013-04-07 14:41:36"
         }
     ],
     "packages-dev": [

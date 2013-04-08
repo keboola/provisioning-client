@@ -1,4 +1,4 @@
-# Keboola Provisioning Client[![Build Status](https://secure.travis-ci.org/keboola/php-csv.png)](http://travis-ci.org/keboola/php-csv)
+# Keboola Provisioning Client
 
 Get Credentials from Provisioning API.
 
