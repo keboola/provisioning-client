@@ -6,6 +6,6 @@
         "psr-0": {"Keboola\\Provisioning\\Client": "src/"}
     },
 	"require": {
-		"symfony/process": "2.1.*"
+		"symfony/process": "2.3.*"
 	}
 }
