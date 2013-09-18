@@ -5,7 +5,7 @@ class Client
 
 	private $_runId;
 	private $_token;
-	private $_apiUrl = 'http://transformation.keboola.com/provisioning';
+	private $_apiUrl = 'https://provisioning.keboola.com/provisioning';
 	private $_backend = "mysql";
 	private $_timeout = 30;
 	private $_id;
