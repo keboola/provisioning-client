@@ -3,7 +3,7 @@
 	"description": "Keboola Provisioning Client",
 	"homepage": "http://keboola.com",
 	"autoload": {
-        "psr-0": {"Keboola\\Provisioning\\Client": "src/"}
+        "psr-0": {"Keboola\\Provisioning": "src/"}
     },
 	"require": {
 		"symfony/process": "2.3.*"
