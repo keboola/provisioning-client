@@ -7,7 +7,7 @@ class Client
 	private $_token;
 	private $_apiUrl = 'https://syrup.keboola.com/provisioning';
 	private $_backend = "mysql";
-	private $_timeout = 60;
+	private $_timeout = 300;
 	private $_id;
 	private $_credentials;
 
