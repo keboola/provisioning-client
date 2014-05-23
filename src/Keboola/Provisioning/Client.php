@@ -42,7 +42,7 @@ class Client
 
 	private function _createCredentials()
 	{
-		$command = 'curl -k -XPOST ';
+		$command = 'curl --http1.0 --sslv3 -k -XPOST ';
 		foreach ($this->_getHeaders() as $header) {
 			$command .= " -H " . escapeshellarg($header);
 		}
@@ -53,7 +53,7 @@ class Client
 
 	private function _getCredentials($id)
 	{
-		$command = 'curl -k ';
+		$command = 'curl --http1.0 --sslv3 -k ';
 		foreach ($this->_getHeaders() as $header) {
 			$command .= " -H " . escapeshellarg($header);
 		}
@@ -63,7 +63,7 @@ class Client
 	}
 
 	private function _dropCredentials($id) {
-		$command = 'curl -k -XDELETE ';
+		$command = 'curl --http1.0 --sslv3 -k -XDELETE ';
 		foreach ($this->_getHeaders() as $header) {
 			$command .= " -H " . escapeshellarg($header);
 		}
