@@ -3,30 +3,35 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7a0e51ae94ffb24d6e4f95ee73d1a3bc",
+    "hash": "3ad3b87236e92add1101de95d4b42a53",
     "packages": [
         {
             "name": "symfony/process",
-            "version": "2.1.x-dev",
+            "version": "v2.5.0",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "db29a04c9b3a3a8f3afcb1a498b8855d6329db0c"
+                "reference": "5d7d78e23894544740219e006320678cfa4cd45b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/db29a04c9b3a3a8f3afcb1a498b8855d6329db0c",
-                "reference": "db29a04c9b3a3a8f3afcb1a498b8855d6329db0c",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/5d7d78e23894544740219e006320678cfa4cd45b",
+                "reference": "5d7d78e23894544740219e006320678cfa4cd45b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
-                    "Symfony\\Component\\Process": ""
+                    "Symfony\\Component\\Process\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -36,7 +41,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Symfony Community",
@@ -45,7 +52,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2013-04-07 14:41:36"
+            "time": "2014-05-23 09:02:52"
         }
     ],
     "packages-dev": [
@@ -55,9 +62,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "symfony/process": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": [
 
     ],
