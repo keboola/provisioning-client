@@ -1,3 +1,7 @@
+## 0.2.3
+
+* [Chore] Update Symfony/Process
+
 ## 0.2.2
 
 * [Bugfix] Force HTTP/1.0 and SSL version 3
