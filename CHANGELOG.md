@@ -1,3 +1,7 @@
+## 0.3.0
+
+* [Refactoring] Completely refactored and added testing for MySQL and Redshift. Backwards incompatible.
+
 ## 0.2.3
 
 * [Chore] Update Symfony/Process

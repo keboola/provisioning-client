@@ -1,18 +1,17 @@
 <?php
-
 ini_set('display_errors', true);
+// Define path to application directory
+define('ROOT_PATH', __DIR__);
+require_once ROOT_PATH . '/vendor/autoload.php';
+
+if (file_exists('config.php')) {
+	require_once 'config.php';
+}
+
+defined('PROVISIONING_API_URL')
+	|| define('PROVISIONING_API_URL', getenv('PROVISIONING_API_URL') ? getenv('PROVISIONING_API_URL') : 'url');
+
+defined('PROVISIONING_API_TOKEN')
+	|| define('PROVISIONING_API_TOKEN', getenv('PROVISIONING_API_TOKEN') ? getenv('PROVISIONING_API_TOKEN') : 'token');
 
 
-spl_autoload_register(function ($className) {
-    $file = realpath(
-        __DIR__ . DIRECTORY_SEPARATOR
-        . 'src' . DIRECTORY_SEPARATOR
-        . str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php'
-    );
-
-    if (!file_exists($file)) {
-        throw new \InvalidArgumentException('Could not load class: '.$className);
-    }
-
-    require_once $file;
-});

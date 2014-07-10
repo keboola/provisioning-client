@@ -1,128 +1,193 @@
 <?
 namespace Keboola\Provisioning;
+use Guzzle\Http\Exception\BadResponseException;
+use Guzzle\Http\Exception\ClientErrorResponseException;
+use Guzzle\Http\Message\RequestInterface;
+
+/**
+ * Class Client
+ *
+ * usage:
+ *
+ * $client = new \Keboola\Provisioning\Client("mysql", "token", "runid");
+ * $credentials = $client->getCredentials("transformations");
+ *
+ * @package Keboola\Provisioning
+ */
 class Client
 {
 
-	private $_runId;
-	private $_token;
-	private $_apiUrl = 'https://syrup.keboola.com/provisioning';
-	private $_backend = "mysql";
-	private $_timeout = 300;
-	private $_id;
-	private $_credentials;
+	/**
+	 * @var string
+	 */
+	private $runId;
 
-	private $_provisioningStorageUrl = '';
-	private $_provisioningStorageToken = '';
+	/**
+	 * @var string
+	 */
+	private $token;
 
-	public function __construct($token, $runId)
+	/**
+	 * @var string
+	 */
+	private $backend = "mysql";
+
+	/**
+	 * @var int
+	 */
+	private $timeout = 300;
+
+	/**
+	 * @var \Guzzle\Http\Client $client
+	 */
+	private $client = null;
+
+	/**
+	 * @var string
+	 */
+	private $provisioningStorageUrl = '';
+
+	/**
+	 * @var string
+	 */
+	private $provisioningStorageToken = '';
+
+	/**
+	 * @param $backend
+	 * @param $token
+	 * @param $runId
+	 * @param string $url
+	 */
+	public function __construct($backend, $token, $runId, $url='https://syrup.keboola.com/provisioning')
 	{
+		$this->setBackend($backend);
 		$this->setToken($token);
 		$this->setRunId($runId);
+		$client = new \Guzzle\Http\Client($url);
+		$client->getConfig()->set('curl.options', array(
+			CURLOPT_SSLVERSION => 3,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
+			CURLOPT_TIMEOUT => $this->timeout
+		));
+
+		$this->client = $client;
 	}
 
-	public function getCredentials()
+	/**
+	 * @param string $type
+	 * @return mixed
+	 */
+	public function getCredentials($type="transformations")
 	{
-		if ($this->_credentials) {
-			return $this->_credentials;
-		}
-		$response = $this->_createCredentials();
-		$this->setCredentialsId($response["id"]);
-		$credentialsResponse = $this->_getCredentials($this->_id);
-		$this->_credentials = $credentialsResponse["credentials"];
-		return $this->_credentials;
-	}
-
-	public function dropCredentials() {
-		if (!$this->getCredentialsId()) {
-			return false;
-		}
-		$result = $this->_dropCredentials($this->getCredentialsId());
-		return true;
-	}
-
-	private function _createCredentials()
-	{
-		$command = 'curl --http1.0 --sslv3 -k -XPOST ';
-		foreach ($this->_getHeaders() as $header) {
-			$command .= " -H " . escapeshellarg($header);
-		}
-		$url = $this->_constructUrl();
-		$command .= " " . escapeshellarg($url);
-		return $this->_request($command);
-	}
-
-	private function _getCredentials($id)
-	{
-		$command = 'curl --http1.0 --sslv3 -k ';
-		foreach ($this->_getHeaders() as $header) {
-			$command .= " -H " . escapeshellarg($header);
-		}
-		$url = $this->_constructUrl($id);
-		$command .= " " . escapeshellarg($url);
-		return $this->_request($command);
-	}
-
-	private function _dropCredentials($id) {
-		$command = 'curl --http1.0 --sslv3 -k -XDELETE ';
-		foreach ($this->_getHeaders() as $header) {
-			$command .= " -H " . escapeshellarg($header);
-		}
-		$url = $this->_constructUrl($id);
-		$command .= " " . escapeshellarg($url);
-		return $this->_request($command);
-	}
-
-	private function _request($command)
-	{
-		$process = new \Symfony\Component\Process\Process($command, null, null, null, $this->getTimeout());
-		$process->run();
-		if (!$process->isSuccessful()) {
-		    throw new Exception("Provisioning API Error ({$process->getErrorOutput()}).", null, null, 'PROVISIONING_API_ERROR');
-		}
-		$response = $this->_parseResponse($process->getOutput());
+		$response = $this->createCredentialsRequest($type);
+		unset($response["status"]);
 		return $response;
 	}
 
+	/**
+	 * @param $id
+	 * @return mixed
+	 */
+	public function getCredentialsById($id) {
+		$response = $this->getCredentialsByIdRequest($id);
+		unset($response["status"]);
+		return $response;
+	}
 
-	public function getCredentialsId()
+	/**
+	 * @param $id
+	 * @return bool
+	 */
+	public function dropCredentials($id) {
+		$this->dropCredentialsRequest($id);
+		return true;
+	}
+
+	/**
+	 * @param $id
+	 * @return bool
+	 */
+	public function killProcesses($id) {
+		$this->killProcessesRequest($id);
+		return true;
+	}
+
+
+	/**
+	 * @param string $type
+	 * @return mixed
+	 */
+	private function createCredentialsRequest($type="transformations")
 	{
-		return $this->_id;
+		$body = array("type" => $type);
+		$request = $this->client->post($this->getBackend(), $this->getHeaders(), json_encode($body));
+		return $this->sendRequest($request);
 	}
 
-	public function setCredentialsId($id)
+	/**
+	 * @param string $id
+	 * @return mixed
+	 */
+	private function getCredentialsByIdRequest($id)
 	{
-		$this->_id = $id;
-		return $this;
+		$request = $this->client->get($this->getBackend() . "/" . $id, $this->getHeaders());
+		return $this->sendRequest($request);
 	}
 
-	private function _constructUrl($id="") {
-		return $this->getApiUrl() . "/" . $this->getBackend() . "/" . $id;
+	/**
+	 * @param string $id
+	 * @return mixed
+	 */
+	private function killProcessesRequest($id)
+	{
+		$request = $this->client->post($this->getBackend() . "/" . $id . "/kill", $this->getHeaders());
+		return $this->sendRequest($request);
 	}
 
-	private function _getHeaders() {
+	/**
+	 * @param string $id
+	 * @return mixed
+	 */
+	private function dropCredentialsRequest($id)
+	{
+		$request = $this->client->delete($this->getBackend() . "/" . $id, $this->getHeaders());
+		return $this->sendRequest($request);
+	}
+
+	/**
+	 * @param $request RequestInterface
+	 * @return mixed
+	 * @throws Exception
+	 */
+	private function sendRequest(RequestInterface $request) {
+		try {
+			$request->send();
+		} catch (ClientErrorResponseException $e) {
+			$data = json_decode($request->getResponse()->getBody(true), true);
+			throw new Exception('Error from Provisioning API: ' . $data["message"], null);
+		} catch (BadResponseException $e) {
+			throw new Exception('Error receiving response from Provisioning API', null);
+		}
+		$result = $this->parseResponse($request->getResponse()->getBody(true));
+		return $result;
+	}
+
+	/**
+	 * @return array
+	 */
+	private function getHeaders() {
 		$headers = array(
-			"X-StorageApi-Token: {$this->getToken()}",
-			"X-KBC-RunId: {$this->getRunId()}"
+			"X-StorageApi-Token" => "{$this->getToken()}",
+			"X-KBC-RunId" => "{$this->getRunId()}"
 		);
 		if ($this->getProvisioningStorageToken()) {
-			$headers[] = "X-Provisioning-Token: " . $this->getProvisioningStorageToken();
+			$headers["X-Provisioning-Token"] = $this->getProvisioningStorageToken();
 		}
 		if ($this->getProvisioningStorageUrl()) {
-			$headers[] = "X-StorageApi-Url: ". $this->getProvisioningStorageUrl();
+			$headers["X-StorageApi-Url"] = $this->getProvisioningStorageUrl();
 		}
 
 		return $headers;
-	}
-
-	public function setTimeout($timeout)
-	{
-		$this->_timeout = $timeout;
-		return $this;
-	}
-
-	public function getTimeout()
-	{
-		return $this->_timeout;
 	}
 
 	/**
@@ -133,7 +198,7 @@ class Client
 	 * @throws Exception
 	 * @return mixed
 	 */
-	private function _parseResponse($jsonString)
+	private function parseResponse($jsonString)
 	{
 		// Detect JSON string
 		$data = json_decode($jsonString, true);
@@ -155,66 +220,90 @@ class Client
 		return $data;
 	}
 
+	/**
+	 * @param $backend
+	 * @return $this
+	 */
+	private function setBackend($backend)
+	{
+		$this->backend = $backend;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function getBackend()
+	{
+		return $this->backend;
+	}
+
+	/**
+	 * @param $url
+	 * @return $this
+	 */
 	public function setProvisioningStorageUrl($url) {
-		$this->_provisioningStorageUrl = $url;
+		$this->provisioningStorageUrl = $url;
 		return $this;
 	}
 
+	/**
+	 * @param $token
+	 * @return $this
+	 */
 	public function setProvisioningStorageToken($token) {
-		$this->_provisioningStorageToken = $token;
+		$this->provisioningStorageToken = $token;
 		return $this;
 	}
 
-	public function getProvisioningStorageUrl() {
-		return $this->_provisioningStorageUrl;
+	/**
+	 * @return string
+	 */
+	private function getProvisioningStorageUrl() {
+		return $this->provisioningStorageUrl;
 	}
 
-	public function getProvisioningStorageToken() {
-		return $this->_provisioningStorageToken;
+	/**
+	 * @return string
+	 */
+	private function getProvisioningStorageToken() {
+		return $this->provisioningStorageToken;
 	}
 
-	public function setApiUrl($url)
+	/**
+	 * @param $token
+	 * @return $this
+	 */
+	private function setToken($token)
 	{
-		$this->_apiUrl = $url;
+		$this->token = $token;
 		return $this;
 	}
 
-	public function getApiUrl()
+	/**
+	 * @return mixed
+	 */
+	private function getToken()
 	{
-		return $this->_apiUrl;
+		return $this->token;
 	}
 
-	public function setBackend($backend)
+	/**
+	 * @param $runId
+	 * @return $this
+	 */
+	private function setRunId($runId)
 	{
-		$this->_backend = $backend;
+		$this->runId = $runId;
 		return $this;
 	}
 
-	public function getBackend()
+	/**
+	 * @return mixed
+	 */
+	private function getRunId()
 	{
-		return $this->_backend;
-	}
-
-	public function setToken($token)
-	{
-		$this->_token = $token;
-		return $this;
-	}
-
-	public function getToken()
-	{
-		return $this->_token;
-	}
-
-	public function setRunId($runId)
-	{
-		$this->_runId = $runId;
-		return $this;
-	}
-
-	public function getRunId()
-	{
-		return $this->_runId;
+		return $this->runId;
 	}
 
 
