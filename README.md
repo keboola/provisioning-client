@@ -5,7 +5,30 @@ Get Credentials from Provisioning API.
 
 ## Usage
 
-TODO
+If you have already an instance of [Storage API client](https://github.com/keboola/storage-api-php-client) in `$storageApi`, then you can get credentials to transforamation database with the following call:
+```
+$provisioning = new \Keboola\Provisioning\Client('redshift', $storageApi->getTokenString(), $storageApi->getRunId());
+$credentials = $provisioning->getCredentials('transformations');
+```
+
+First argument to `Client` constructor is database backend, which may be either *mysql* or *redshift*. The `$credentials` variable above will contain the following stucture:
+
+```
+array (
+  'url' => 'redshift/foo',
+  'id' => 'foo',
+  'credentials' => 
+  array (
+    'id' => 'foo',
+    'hostname' => 'ACMEdatabseServerAddress',
+    'db' => 'ACMEDatabse',
+    'password' => 'ACMEPassword',
+    'user' => 'Wile.E.Coyote',
+    'schema' => 'ACMESchema',
+  ),
+)
+```
+
 
 ## Installation
 
@@ -25,7 +48,7 @@ mv ./composer.phar ~/bin/composer # or /usr/local/bin/composer
 {
     "require": {
         "php" : ">=5.3.2",
-        "keboola/provisioning-client": "1.0.*"
+        "keboola/provisioning-client": "0.3.*"
     }
 }
 ```
