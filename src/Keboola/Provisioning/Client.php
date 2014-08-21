@@ -1,4 +1,4 @@
-<?
+<?php
 namespace Keboola\Provisioning;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Exception\ClientErrorResponseException;
@@ -53,9 +53,11 @@ class Client
 	private $provisioningStorageToken = '';
 
 	/**
-	 * @param $backend
-	 * @param $token
-	 * @param $runId
+     * Constructor.
+     * 
+	 * @param string $backend Backend type, currently 'mysql' or 'redshift' is accepted.
+	 * @param string $token Storage API token.
+	 * @param string $runId Storage API run Id.
 	 * @param string $url
 	 */
 	public function __construct($backend, $token, $runId, $url='https://syrup.keboola.com/provisioning')
