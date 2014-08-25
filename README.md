@@ -5,13 +5,15 @@ Get Credentials from Provisioning API.
 
 ## Usage
 
-If you have already an instance of [Storage API client](https://github.com/keboola/storage-api-php-client) in `$storageApi`, then you can get credentials to transforamation database with the following call:
+### Getting Credentials
+
+If you have already an instance of [Storage API client](https://github.com/keboola/storage-api-php-client) in `$storageApi`, then you can get credentials to transformation database with the following call:
 ```
 $provisioning = new \Keboola\Provisioning\Client('redshift', $storageApi->getTokenString(), $storageApi->getRunId());
 $credentials = $provisioning->getCredentials('transformations');
 ```
 
-First argument to `Client` constructor is database backend, which may be either *mysql* or *redshift*. The `$credentials` variable above will contain the following stucture:
+First argument to `Client` constructor is database backend, which may be either *mysql* or *redshift*. The `$credentials` variable above will contain the following structure:
 
 ```
 array (
@@ -27,6 +29,20 @@ array (
     'schema' => 'ACMESchema',
   ),
 )
+```
+
+### Resetting Credentials
+
+Resetting credentials is useful when you want to clean up the working schema. Resetting credentials will drop the entire schema and create a new empty one. Resetting credentials does not delete the credentials themselves - i.e. password and user name may remain the same. If you have already an instance of [Storage API client](https://github.com/keboola/storage-api-php-client) in `$storageApi`, then you can get credentials to transformation database with the following call:
+```
+// get current credentials
+$provisioning = new \Keboola\Provisioning\Client('redshift', $storageApi->getTokenString(), $storageApi->getRunId());
+$credentials = $provisioning->getCredentials('transformations');
+
+$provisioning->dropCredentials($credentials['id']);
+
+// get new credentials
+$credentials = $provisioning->getCredentials('transformations');
 ```
 
 
