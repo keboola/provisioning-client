@@ -5,16 +5,28 @@
  * Date: 10.7.2014
  *
  */
+require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
 
-class Keboola_ProvisioningClient_RedshiftTest extends PHPUnit_Framework_TestCase
+class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
 {
 
-	/**
-	 * @var Client
-	 */
-	private $client;
+    public static function setUpBeforeClass()
+    {
+        // PRE cleanup
+        \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift", "transformations", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_SHARE_TOKEN);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        // PRE cleanup
+        \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift", "transformations", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_SHARE_TOKEN);
+    }
 
 	public function setUp()
 	{
@@ -24,7 +36,7 @@ class Keboola_ProvisioningClient_RedshiftTest extends PHPUnit_Framework_TestCase
 	/**
 	 *
 	 */
-	public function testCreateTransfomrationCredentials()
+	public function testCreateTransformationCredentials()
 	{
 		$result = $this->client->getCredentials();
 		$this->assertArrayHasKey("credentials", $result);
@@ -34,6 +46,11 @@ class Keboola_ProvisioningClient_RedshiftTest extends PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("password", $result["credentials"]);
 		$this->assertArrayHasKey("user", $result["credentials"]);
 		$this->assertArrayHasKey("schema", $result["credentials"]);
+        $conn = $this->connect($result["credentials"]);
+        $this->dbQuery($conn);
+        $conn->close();
+        $this->client->dropCredentials($result["credentials"]["id"]);
+
 	}
 
 	/**
@@ -49,6 +66,11 @@ class Keboola_ProvisioningClient_RedshiftTest extends PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("password", $result["credentials"]);
 		$this->assertArrayHasKey("user", $result["credentials"]);
 		$this->assertArrayHasKey("schema", $result["credentials"]);
+        $conn = $this->connect($result["credentials"]);
+        $this->dbQuery($conn);
+        $conn->close();
+        $this->client->dropCredentials($result["credentials"]["id"]);
+
 	}
 
 	/**
@@ -67,6 +89,11 @@ class Keboola_ProvisioningClient_RedshiftTest extends PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("user", $result["credentials"]);
 		$this->assertArrayHasKey("schema", $result["credentials"]);
 		$this->assertArrayHasKey("inUse", $result);
+        $conn = $this->connect($result["credentials"]);
+        $this->dbQuery($conn);
+        $conn->close();
+        $this->client->dropCredentials($id);
+
 	}
 
 	/**
@@ -83,10 +110,15 @@ class Keboola_ProvisioningClient_RedshiftTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testKillProcesses()
 	{
-		$result = $this->client->getCredentials();
-		$id = $result["credentials"]["id"];
-		$result = $this->client->killProcesses($id);
-		$this->assertTrue($result);
+        $result = $this->client->getCredentials();
+        $conn = $this->connect($result["credentials"]);
+        $this->dbQuery($conn);
+        $id = $result["credentials"]["id"];
+        $result = $this->client->killProcesses($id);
+        $this->assertTrue($result);
+        $this->assertFalse($this->dbQuery($conn));
+        $conn->close();
+        $this->client->dropCredentials($id);
 	}
 
 	/**
@@ -104,15 +136,22 @@ class Keboola_ProvisioningClient_RedshiftTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testDropCredentials()
 	{
-		$result = $this->client->getCredentials();
-		$id = $result["credentials"]["id"];
-		$result = $this->client->dropCredentials($id);
-		$this->assertTrue($result);
+        $result = $this->client->getCredentials();
+        $conn = $this->connect($result["credentials"]);
+        $this->assertTrue($this->dbQuery($conn));
+        $id = $result["credentials"]["id"];
+        $result = $this->client->dropCredentials($id);
+        $this->assertTrue($result);
+        $this->assertFalse($this->dbQuery($conn));
+        $conn->close();
 
-		$result = $this->client->getCredentials("sandbox");
-		$id = $result["credentials"]["id"];
-		$result = $this->client->dropCredentials($id);
-		$this->assertTrue($result);
+        $result = $this->client->getCredentials("sandbox");
+        $id = $result["credentials"]["id"];
+        $conn = $this->connect($result["credentials"]);
+        $result = $this->client->dropCredentials($id);
+        $this->assertTrue($result);
+        $this->assertFalse($this->dbQuery($conn));
+        $conn->close();
 	}
 
 	/**
@@ -123,4 +162,83 @@ class Keboola_ProvisioningClient_RedshiftTest extends PHPUnit_Framework_TestCase
 	{
 		$this->client->dropCredentials("123456");
 	}
+
+    /**
+     *
+     */
+    public function testShareCredentials()
+    {
+        $result = $this->client->getCredentials("sandbox");
+        $conn = $this->connect($result["credentials"]);
+        $this->assertTrue($this->dbQuery($conn));
+        $conn->close();
+
+        // Prepare credentials for a different token
+        $shareToClient = new Client("redshift", PROVISIONING_API_SHARE_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
+        $shareToResult = $shareToClient->getCredentials("sandbox");
+        $shareToConn = $this->connect($shareToResult["credentials"]);
+        $this->assertTrue($this->dbQuery($shareToConn));
+        $shareToConn->close();
+
+        // share credentials to this token
+        try {
+            $this->client->shareCredentials($result["credentials"]["id"], PROVISIONING_API_SHARE_TOKEN_ID);
+            $this->fail("Exception not caught.");
+        } catch (Exception $e) {
+            $this->assertEquals("Error from Provisioning API: Sharing credentials not supported in Redshift", $e->getMessage());
+        }
+
+        $this->client->dropCredentials($result["credentials"]["id"]);
+        $shareToClient->dropCredentials($shareToResult["credentials"]["id"]);
+    }
+
+    /**
+     * @param $credentials
+     * @return \Doctrine\DBAL\Connection
+     */
+    public function connect($credentials)
+   	{
+        $connectionParams  = array(
+            'host' => $credentials["hostname"],
+            'user' => $credentials["user"],
+            'password' => $credentials["password"],
+            'dbname' => $credentials["db"],
+            'schema' => $credentials["schema"],
+            'port' => 5439,
+            "driver" => "pdo_pgsql"
+        );
+
+        $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams);
+        $conn->connect();
+        return $conn;
+   	}
+
+    /**
+     * @param \Doctrine\DBAL\Connection $conn
+     * @return bool
+     */
+    public function dbQuery(\Doctrine\DBAL\Connection $conn)
+    {
+        try {
+            $conn->fetchAll("SELECT 1;");
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param $credentials
+     * @return bool
+     */
+    public function dbConnection($credentials)
+    {
+        try {
+            $conn = $this->connect($credentials);
+            $this->dbQuery($conn);
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            return false;
+        }
+        return true;
+    }
 }

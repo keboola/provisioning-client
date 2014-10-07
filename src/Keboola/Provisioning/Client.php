@@ -114,8 +114,17 @@ class Client
 		return true;
 	}
 
+    /**
+     * @param $id
+     * @param $tokenId
+     * @return bool
+     */
+    public function shareCredentials($id, $tokenId) {
+        $this->shareCredentialsRequest($id, $tokenId);
+        return true;
+    }
 
-	/**
+    /**
 	 * @param string $type
 	 * @return mixed
 	 */
@@ -156,6 +165,17 @@ class Client
 		return $this->sendRequest($request);
 	}
 
+    /**
+     * @param $id
+     * @param $tokenId
+     * @return mixed
+     */
+    private function shareCredentialsRequest($id, $tokenId)
+    {
+        $request = $this->client->post($this->getBackend() . "/" . $id . "/share/" . $tokenId, $this->getHeaders());
+        return $this->sendRequest($request);
+    }
+
 	/**
 	 * @param $request RequestInterface
 	 * @return mixed
@@ -166,9 +186,9 @@ class Client
 			$request->send();
 		} catch (ClientErrorResponseException $e) {
 			$data = json_decode($request->getResponse()->getBody(true), true);
-			throw new Exception('Error from Provisioning API: ' . $data["message"], null);
+			throw new Exception('Error from Provisioning API: ' . $data["message"], null, $e);
 		} catch (BadResponseException $e) {
-			throw new Exception('Error receiving response from Provisioning API', null);
+			throw new Exception('Error receiving response from Provisioning API', null, $e);
 		}
 		$result = $this->parseResponse($request->getResponse()->getBody(true));
 		return $result;

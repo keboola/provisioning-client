@@ -125,8 +125,10 @@
 
 	<target name="api-tests" depends="prepare" description="Run unit tests with PHPUnit">
 		<exec executable="phpunit" failonerror="true">
-			<env key="STORAGE_API_URL" value="${storage-api-url}"/>
-			<env key="STORAGE_API_TOKEN" value="${storage-api-token}"/>
+			<env key="PROVISIONING_API_URL" value="${provisioning-api-url}"/>
+			<env key="PROVISIONING_API_TOKEN" value="${provisioning-api-token}"/>
+			<env key="PROVISIONING_API_SHARE_TOKEN" value="${provisioning-api-share-token}"/>
+			<env key="PROVISIONING_API_SHARE_TOKEN_ID" value="${provisioning-api-share-token-id}"/>
 			<arg value="--configuration"/>
 			<arg path="phpunit.xml.dist"/>
 		</exec>
@@ -134,8 +136,10 @@
 
 	<target name="api-tests-ci" depends="prepare" description="Run unit tests with PHPUnit">
 		<exec executable="phpunit" failonerror="true">
-			<env key="STORAGE_API_URL" value="${storage-api-url}"/>
-			<env key="STORAGE_API_TOKEN" value="${storage-api-token}"/>
+            <env key="PROVISIONING_API_URL" value="${provisioning-api-url}"/>
+            <env key="PROVISIONING_API_TOKEN" value="${provisioning-api-token}"/>
+            <env key="PROVISIONING_API_SHARE_TOKEN" value="${provisioning-api-share-token}"/>
+            <env key="PROVISIONING_API_SHARE_TOKEN_ID" value="${provisioning-api-share-token-id}"/>
 			<arg value="--configuration"/>
 			<arg path="phpunit-ci.xml.dist"/>
 		</exec>
