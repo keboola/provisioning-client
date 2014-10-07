@@ -24,6 +24,9 @@
 		<mkdir dir="${basedir}/build/results/logs"/>
 		<mkdir dir="${basedir}/build/results/pdepend"/>
 		<mkdir dir="${basedir}/build/results/apigen"/>
+        <exec executable="/usr/local/bin/composer">
+            <arg value="install" />
+        </exec>
 	</target>
 
 	<target name="lint">
@@ -117,7 +120,7 @@
 			<arg value="--destination"/>
 			<arg path="${basedir}/build/results/apigen"/>
 			<arg value="--title"/>
-			<arg value="Keboola Storage API PHP Client"/>
+			<arg value="Provisioning API PHP Client"/>
 			<arg value="--todo=yes"/>
 			<arg value="--progressbar=no"/>
 		</exec>
