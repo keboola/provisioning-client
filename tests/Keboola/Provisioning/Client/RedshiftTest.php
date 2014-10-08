@@ -17,7 +17,6 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift", "transformations", PROVISIONING_API_TOKEN);
-        \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_SHARE_TOKEN);
     }
 
     public static function tearDownAfterClass()
@@ -25,7 +24,6 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift", "transformations", PROVISIONING_API_TOKEN);
-        \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_SHARE_TOKEN);
     }
 
 	public function setUp()

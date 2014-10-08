@@ -17,7 +17,6 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("mysql", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("mysql", "transformations", PROVISIONING_API_TOKEN);
-        \ProvisioningTestCase::cleanUp("mysql", "sandbox", PROVISIONING_API_SHARE_TOKEN);
     }
 
     public static function tearDownAfterClass()
@@ -25,7 +24,6 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         // POST cleanup
         \ProvisioningTestCase::cleanUp("mysql", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("mysql", "transformations", PROVISIONING_API_TOKEN);
-        \ProvisioningTestCase::cleanUp("mysql", "sandbox", PROVISIONING_API_SHARE_TOKEN);
     }
 
 	public function setUp()
