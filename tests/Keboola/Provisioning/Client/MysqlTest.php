@@ -160,61 +160,6 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 	}
 
     /**
-     *
-     */
-    public function testShareCredentials()
-    {
-        $result = $this->client->getCredentials("sandbox");
-        $conn = $this->connect($result["credentials"]);
-        $this->assertTrue($this->dbQuery($conn));
-        $databases = $conn->fetchAll("SHOW DATABASES;");
-        $this->assertEquals("information_schema", $databases[0]["Database"]);
-        $sharedDb = $result["credentials"]["db"];
-        $dbArray = array();
-        foreach($databases as $db) {
-            $dbArray[] = $db["Database"];
-        }
-        $this->assertContains($sharedDb, $dbArray, print_r($dbArray, true));
-
-        $conn->close();
-
-        // Prepare credentials for a different token
-        $shareToClient = new Client("mysql", PROVISIONING_API_SHARE_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
-        $shareToResult = $shareToClient->getCredentials("sandbox");
-        $shareToConn = $this->connect($shareToResult["credentials"]);
-        $this->assertTrue($this->dbQuery($shareToConn));
-        $databases = $shareToConn->fetchAll("SHOW DATABASES;");
-        $dbCount = count($databases);
-        $this->assertEquals("information_schema", $databases[0]["Database"]);
-        $databases = $shareToConn->fetchAll("SHOW DATABASES;");
-        $dbArray = array();
-        foreach($databases as $db) {
-            $dbArray[] = $db["Database"];
-        }
-        $this->assertNotContains($sharedDb, $dbArray, print_r($dbArray, true));
-        $shareToConn->close();
-
-        // share credentials to this token
-        $this->client->shareCredentials($result["credentials"]["id"], PROVISIONING_API_SHARE_TOKEN_ID);
-
-        // test available databases in the account
-        $shareToConn = $this->connect($shareToResult["credentials"]);
-        $databases = $shareToConn->fetchAll("SHOW DATABASES;");
-        $this->assertCount($dbCount + 1, $databases);
-        $dbArray = array();
-        foreach($databases as $db) {
-            $dbArray[] = $db["Database"];
-        }
-        $this->assertContains($sharedDb, $dbArray, print_r($dbArray, true));
-
-        // Cleanup
-        $shareToConn->close();
-        $this->client->dropCredentials($result["credentials"]["id"]);
-        $shareToClient->dropCredentials($shareToResult["credentials"]["id"]);
-    }
-
-
-    /**
      * @param $credentials
      * @return \Doctrine\DBAL\Connection
      */

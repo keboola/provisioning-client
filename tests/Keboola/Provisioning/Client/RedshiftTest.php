@@ -164,35 +164,6 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
 	}
 
     /**
-     *
-     */
-    public function testShareCredentials()
-    {
-        $result = $this->client->getCredentials("sandbox");
-        $conn = $this->connect($result["credentials"]);
-        $this->assertTrue($this->dbQuery($conn));
-        $conn->close();
-
-        // Prepare credentials for a different token
-        $shareToClient = new Client("redshift", PROVISIONING_API_SHARE_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
-        $shareToResult = $shareToClient->getCredentials("sandbox");
-        $shareToConn = $this->connect($shareToResult["credentials"]);
-        $this->assertTrue($this->dbQuery($shareToConn));
-        $shareToConn->close();
-
-        // share credentials to this token
-        try {
-            $this->client->shareCredentials($result["credentials"]["id"], PROVISIONING_API_SHARE_TOKEN_ID);
-            $this->fail("Exception not caught.");
-        } catch (Exception $e) {
-            $this->assertEquals("Error from Provisioning API: Sharing credentials not supported in Redshift", $e->getMessage());
-        }
-
-        $this->client->dropCredentials($result["credentials"]["id"]);
-        $shareToClient->dropCredentials($shareToResult["credentials"]["id"]);
-    }
-
-    /**
      * @param $credentials
      * @return \Doctrine\DBAL\Connection
      */

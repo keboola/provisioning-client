@@ -115,16 +115,6 @@ class Client
 	}
 
     /**
-     * @param $id
-     * @param $tokenId
-     * @return bool
-     */
-    public function shareCredentials($id, $tokenId) {
-        $this->shareCredentialsRequest($id, $tokenId);
-        return true;
-    }
-
-    /**
 	 * @param string $type
 	 * @return mixed
 	 */
@@ -164,17 +154,6 @@ class Client
 		$request = $this->client->delete($this->getBackend() . "/" . $id, $this->getHeaders());
 		return $this->sendRequest($request);
 	}
-
-    /**
-     * @param $id
-     * @param $tokenId
-     * @return mixed
-     */
-    private function shareCredentialsRequest($id, $tokenId)
-    {
-        $request = $this->client->post($this->getBackend() . "/" . $id . "/share/" . $tokenId, $this->getHeaders());
-        return $this->sendRequest($request);
-    }
 
 	/**
 	 * @param $request RequestInterface
