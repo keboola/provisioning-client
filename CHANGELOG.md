@@ -1,3 +1,12 @@
+## 0.4.1
+
+* [Feature] Remove credentials sharing
+* [Feature] Maintenance Backoff
+
+## 0.4.0
+
+* [Tests] API tests
+
 ## 0.3.0
 
 * [Refactoring] Completely refactored and added testing for MySQL and Redshift. Backwards incompatible.
