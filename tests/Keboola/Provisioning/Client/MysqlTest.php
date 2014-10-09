@@ -17,6 +17,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("mysql", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("mysql", "transformations", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("mysql", "sandbox", PROVISIONING_API_TOKEN_SECOND_PROJECT);
     }
 
     public static function tearDownAfterClass()
@@ -24,6 +25,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         // POST cleanup
         \ProvisioningTestCase::cleanUp("mysql", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("mysql", "transformations", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("mysql", "sandbox", PROVISIONING_API_TOKEN_SECOND_PROJECT);
     }
 
 	public function setUp()
@@ -147,6 +149,44 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $this->assertFalse($this->dbQuery($conn));
         $conn->close();
 	}
+
+    /**
+     *
+     */
+    public function testSharedCredentials()
+    {
+        $resultFirst = $this->client->getCredentials("sandbox");
+        $clientSecond = new Client('mysql', PROVISIONING_API_TOKEN_SECOND_PROJECT, "ProvisioningApiTest", PROVISIONING_API_URL);
+        $resultSecond = $clientSecond->getCredentials("sandbox");
+
+        $this->assertEquals($resultFirst["credentials"]["user"], $resultSecond["credentials"]["user"]);
+        $this->assertEquals($resultFirst["credentials"]["hostname"], $resultSecond["credentials"]["hostname"]);
+        $this->assertEquals($resultFirst["credentials"]["password"], $resultSecond["credentials"]["password"]);
+
+        $conn = $this->connect($resultFirst["credentials"]);
+        $databases = $conn->fetchAll("SHOW DATABASES;");
+        $dbArray = array();
+        foreach($databases as $db) {
+            $dbArray[] = $db["Database"];
+        }
+        $this->assertContains($resultFirst["credentials"]["db"], $dbArray, print_r($dbArray, true));
+        $this->assertContains($resultSecond["credentials"]["db"], $dbArray, print_r($dbArray, true));
+        $conn->close();
+
+        $this->client->dropCredentials($resultFirst["credentials"]["id"]);
+
+        $conn = $this->connect($resultSecond["credentials"]);
+        $databases = $conn->fetchAll("SHOW DATABASES;");
+        $dbArray = array();
+        foreach($databases as $db) {
+            $dbArray[] = $db["Database"];
+        }
+        $this->assertNotContains($resultFirst["credentials"]["db"], $dbArray, print_r($dbArray, true));
+        $this->assertContains($resultSecond["credentials"]["db"], $dbArray, print_r($dbArray, true));
+        $conn->close();
+
+        $clientSecond->dropCredentials($resultSecond["credentials"]["id"]);
+    }
 
 	/**
 	 * @expectedException Keboola\Provisioning\Exception
