@@ -3,6 +3,12 @@ namespace Keboola\Provisioning;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use Guzzle\Http\Message\RequestInterface;
+use Guzzle\Plugin\Backoff\BackoffPlugin;
+use Guzzle\Plugin\Backoff\ConstantBackoffStrategy;
+use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
+use Guzzle\Plugin\Backoff\ExponentialBackoffStrategy;
+use Guzzle\Plugin\Backoff\HttpBackoffStrategy;
+use Guzzle\Plugin\Backoff\TruncatedBackoffStrategy;
 
 /**
  * Class Client
@@ -71,6 +77,17 @@ class Client
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
 			CURLOPT_TIMEOUT => $this->timeout
 		));
+
+        $maintenanceBackoff = new BackoffPlugin(
+            new TruncatedBackoffStrategy(10,
+                new MaintenanceBackoffStrategy(array(503),
+                    new CurlBackoffStrategy(CurlBackoffStrategy::getDefaultFailureCodes(),
+                        new ExponentialBackoffStrategy()
+                    )
+                )
+            )
+        );
+        $client->addSubscriber($maintenanceBackoff);
 
 		$this->client = $client;
 	}
