@@ -10,7 +10,6 @@
         "doctrine/orm": "~2.3.0"
  	},
 	"require": {
-		"symfony/process": "~2.4",
         "guzzle/guzzle": "~3.7"
 	}
 }
