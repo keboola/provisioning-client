@@ -73,7 +73,6 @@ class Client
 		$this->setRunId($runId);
 		$client = new \Guzzle\Http\Client($url);
 		$client->getConfig()->set('curl.options', array(
-			CURLOPT_SSLVERSION => 3,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
 			CURLOPT_TIMEOUT => $this->timeout
 		));

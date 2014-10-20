@@ -18,7 +18,6 @@ class ProvisioningTestCase extends \PHPUnit_Framework_TestCase
     {
         $client = new \Guzzle\Http\Client(PROVISIONING_API_URL);
         $client->getConfig()->set('curl.options', array(
-            CURLOPT_SSLVERSION => 3,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
             CURLOPT_TIMEOUT => 300
         ));
