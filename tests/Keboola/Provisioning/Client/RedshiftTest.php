@@ -24,6 +24,21 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift", "transformations", PROVISIONING_API_TOKEN);
+
+        $sapiClient = new \Keboola\StorageApi\Client(array("token" => PROVISIONING_API_TOKEN));
+        if ($sapiClient->bucketExists("in.c-redshift")) {
+            foreach($sapiClient->listTables("in.c-redshift") as $table) {
+                $sapiClient->dropTable($table["id"]);
+            }
+            $sapiClient->dropBucket("in.c-redshift");
+        }
+        if ($sapiClient->bucketExists("out.c-redshift")) {
+            foreach($sapiClient->listTables("out.c-redshift") as $table) {
+                $sapiClient->dropTable($table["id"]);
+            }
+            $sapiClient->dropBucket("out.c-redshift");
+        }
+
     }
 
 	public function setUp()
@@ -160,6 +175,38 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
 	{
 		$this->client->dropCredentials("123456");
 	}
+
+    /**
+     *
+     */
+    public function testBucketPermissions()
+    {
+        $sapiClient = new \Keboola\StorageApi\Client(array("token" => PROVISIONING_API_TOKEN));
+        $csv = new \Keboola\Csv\CsvFile(ROOT_PATH . "/tests/data/table.csv");
+
+        $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_IN, "provisioning test", "redshift");
+        $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_OUT, "provisioning test", "redshift");
+        $sapiClient->createTable("in.c-redshift", "test", $csv);
+        $sapiClient->createTable("out.c-redshift", "test", $csv);
+
+        $result = $this->client->getCredentials();
+        $conn = $this->connect($result["credentials"]);
+        $this->dbQuery($conn);
+
+        $data = $conn->fetchAll("SELECT * FROM \"in.c-redshift\".\"test\" ORDER BY \"id\" ASC;");
+        $this->assertEquals("1", $data[0]["id"]);
+        $this->assertEquals("test1", $data[0]["name"]);
+        $this->assertEquals("2", $data[1]["id"]);
+        $this->assertEquals("test2", $data[1]["name"]);
+
+        $data = $conn->fetchAll("SELECT * FROM \"out.c-redshift\".\"test\" ORDER BY \"id\" ASC;");
+        $this->assertEquals("1", $data[0]["id"]);
+        $this->assertEquals("test1", $data[0]["name"]);
+        $this->assertEquals("2", $data[1]["id"]);
+        $this->assertEquals("test2", $data[1]["name"]);
+
+        $conn->close();
+    }
 
     /**
      * @param $credentials
