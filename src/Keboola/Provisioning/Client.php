@@ -60,7 +60,7 @@ class Client
 
 	/**
      * Constructor.
-     * 
+     *
 	 * @param string $backend Backend type, currently 'mysql' or 'redshift' is accepted.
 	 * @param string $token Storage API token.
 	 * @param string $runId Storage API run Id.
@@ -218,7 +218,7 @@ class Client
 	private function parseResponse($jsonString)
 	{
 		// Detect JSON string
-		$data = json_decode($jsonString, true);
+        $data = json_decode($jsonString, true, 512, JSON_BIGINT_AS_STRING);
 		if ($data === null) {
 			throw new Exception("Provisioning API response empty or invalid JSON ($jsonString)", null, null, "PROVISIONING_API_INVALID_RESPONSE", array("response" => $jsonString));
 		}
