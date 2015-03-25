@@ -62,6 +62,10 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
+
+        $result2 = $this->client->getCredentials();
+        $this->assertEquals($result, $result2);
+
         $this->client->dropCredentials($result["credentials"]["id"]);
 
 	}
@@ -82,6 +86,10 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
+
+        $result2 = $this->client->getCredentials("sandbox");
+        $this->assertEquals($result, $result2);
+
         $this->client->dropCredentials($result["credentials"]["id"]);
 
 	}

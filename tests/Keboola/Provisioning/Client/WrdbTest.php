@@ -46,6 +46,10 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
+
+        $result2 = $this->client->getCredentials("write");
+        $this->assertEquals($result, $result2);
+
         $this->client->dropCredentials($result["credentials"]["id"]);
 	}
 
@@ -64,6 +68,10 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
+
+        $result2 = $this->client->getCredentials("read");
+        $this->assertEquals($result, $result2);
+        
         $this->client->dropCredentials($result["credentials"]["id"]);
 
 	}
