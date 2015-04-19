@@ -114,8 +114,26 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         $this->dbQuery($conn);
         $conn->close();
         $this->client->dropCredentials($id);
-
 	}
+
+    /**
+   	 *
+   	 */
+   	public function testGetExistingCredentials()
+   	{
+        $this->assertFalse($this->client->getExistingCredentials());
+        $this->client->getCredentials();
+        $result = $this->client->getExistingCredentials();
+        $this->assertArrayHasKey("credentials", $result);
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("inUse", $result);
+        $this->client->dropCredentials($result["credentials"]["id"]);
+   	}
 
 	/**
 	 * @expectedException Keboola\Provisioning\CredentialsNotFoundException

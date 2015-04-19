@@ -95,8 +95,25 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
         $this->client->dropCredentials($result["credentials"]["id"]);
-
 	}
+
+    /**
+   	 *
+   	 */
+   	public function testGetExistingCredentials()
+   	{
+        $this->assertFalse($this->client->getExistingCredentials("write"));
+        $this->client->getCredentials("write");
+        $result = $this->client->getExistingCredentials("write");
+        $this->assertArrayHasKey("credentials", $result);
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("inUse", $result);
+        $this->client->dropCredentials($result["credentials"]["id"]);
+   	}
 
 	/**
 	 * @expectedException Keboola\Provisioning\CredentialsNotFoundException

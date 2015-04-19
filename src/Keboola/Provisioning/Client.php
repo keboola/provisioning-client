@@ -101,6 +101,23 @@ class Client
 		return $response;
 	}
 
+    /**
+     * @param string $type
+     * @return bool|mixed
+     * @throws CredentialsNotFoundException
+     * @throws \Exception
+     */
+   	public function getExistingCredentials($type="transformations")
+   	{
+        try {
+            $response = $this->getCredentialsRequest($type);
+        } catch (CredentialsNotFoundException $e) {
+            return false;
+        }
+   		unset($response["status"]);
+   		return $response;
+   	}
+
 	/**
 	 * @param $id
 	 * @return mixed
@@ -139,6 +156,17 @@ class Client
 		$request = $this->client->post($this->getBackend(), $this->getHeaders(), json_encode($body));
 		return $this->sendRequest($request);
 	}
+
+    /**
+	 * @param string $type
+	 * @return mixed
+	 */
+	private function getCredentialsRequest($type="transformations")
+	{
+		$request = $this->client->get($this->getBackend() . "?type=" . $type, $this->getHeaders());
+		return $this->sendRequest($request);
+	}
+
 
 	/**
 	 * @param string $id
