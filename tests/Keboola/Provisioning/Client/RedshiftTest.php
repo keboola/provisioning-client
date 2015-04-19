@@ -118,8 +118,8 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
 	}
 
 	/**
-	 * @expectedException Keboola\Provisioning\Exception
-	 * @expectedExceptionMessage Error from Provisioning API: Credentials not found.
+	 * @expectedException Keboola\Provisioning\CredentialsNotFoundException
+	 * @expectedExceptionMessage Credentials not found.
 	 */
 	public function testGetCredentialsException()
 	{
@@ -143,8 +143,8 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
 	}
 
 	/**
-	 * @expectedException Keboola\Provisioning\Exception
-	 * @expectedExceptionMessage Error from Provisioning API: Credentials not found.
+	 * @expectedException Keboola\Provisioning\CredentialsNotFoundException
+	 * @expectedExceptionMessage Credentials not found.
 	 */
 
 	public function testKillProcessesException()
@@ -176,8 +176,8 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
 	}
 
 	/**
-	 * @expectedException Keboola\Provisioning\Exception
-	 * @expectedExceptionMessage Error from Provisioning API: Credentials not found.
+	 * @expectedException Keboola\Provisioning\CredentialsNotFoundException
+	 * @expectedExceptionMessage Credentials not found.
 	 */
 	public function testDropCredentialsException()
 	{

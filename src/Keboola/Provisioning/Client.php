@@ -4,11 +4,10 @@ use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use Guzzle\Http\Message\RequestInterface;
 use Guzzle\Plugin\Backoff\BackoffPlugin;
-use Guzzle\Plugin\Backoff\ConstantBackoffStrategy;
 use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
 use Guzzle\Plugin\Backoff\ExponentialBackoffStrategy;
-use Guzzle\Plugin\Backoff\HttpBackoffStrategy;
 use Guzzle\Plugin\Backoff\TruncatedBackoffStrategy;
+use Keboola\Provisioning\CredentialsNotFoundException;
 
 /**
  * Class Client
@@ -181,7 +180,13 @@ class Client
 			$request->send();
 		} catch (ClientErrorResponseException $e) {
 			$data = json_decode($request->getResponse()->getBody(true), true);
-			throw new Exception('Error from Provisioning API: ' . $data["message"], null, $e);
+            if ($e->getResponse()->getStatusCode() == 404) {
+                throw new CredentialsNotFoundException($data["message"], null, $e);
+            } else {
+                throw new Exception('Error from Provisioning API: ' . $data["message"], null, $e);
+            }
+
+
 		} catch (BadResponseException $e) {
 			throw new Exception('Error receiving response from Provisioning API', null, $e);
 		}
