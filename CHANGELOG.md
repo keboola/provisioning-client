@@ -1,3 +1,7 @@
+## 0.5.0
+* [Feature] Use `CredentialsNotFoundException` for 404s from API instead of generic `Exception`
+* [Feature] Add `getExistingCredentials` method
+
 ## 0.4.1
 
 * [Feature] Remove credentials sharing
