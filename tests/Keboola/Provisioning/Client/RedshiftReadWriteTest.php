@@ -9,26 +9,26 @@ require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
 
-class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
+class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTestCase
 {
 
     public static function setUpBeforeClass()
     {
         // PRE cleanup
-        \ProvisioningTestCase::cleanUp("wrdb", "read", PROVISIONING_API_TOKEN);
-        \ProvisioningTestCase::cleanUp("wrdb", "write", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift", "read", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift", "write", PROVISIONING_API_TOKEN);
     }
 
     public static function tearDownAfterClass()
     {
         // POST cleanup
-        \ProvisioningTestCase::cleanUp("wrdb", "read", PROVISIONING_API_TOKEN);
-        \ProvisioningTestCase::cleanUp("wrdb", "write", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift", "read", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift", "write", PROVISIONING_API_TOKEN);
     }
 
 	public function setUp()
 	{
-		$this->client = new Client("wrdb", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
+		$this->client = new Client("redshift", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
 	}
 
 	/**
@@ -43,11 +43,9 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 		$this->assertArrayHasKey("db", $result["credentials"]);
 		$this->assertArrayHasKey("password", $result["credentials"]);
 		$this->assertArrayHasKey("user", $result["credentials"]);
+		$this->assertArrayHasKey("schema", $result["credentials"]);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
-        $conn->exec("CREATE TABLE test (id int(11) NOT NULL);");
-        $conn->exec("DROP TABLE test;");
-
         $conn->close();
 
         $result2 = $this->client->getCredentials("write");
@@ -61,6 +59,7 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $result = $this->client->getCredentials("write");
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
+        $conn->exec("SET search_path to {$result["credentials"]["schema"]};");
         $conn->exec("CREATE TABLE test (id INT NOT NULL);");
         $conn->exec("DROP TABLE test;");
         $conn->close();
@@ -79,6 +78,7 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 		$this->assertArrayHasKey("db", $result["credentials"]);
 		$this->assertArrayHasKey("password", $result["credentials"]);
 		$this->assertArrayHasKey("user", $result["credentials"]);
+		$this->assertArrayHasKey("schema", $result["credentials"]);
         $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
@@ -87,18 +87,18 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $this->assertEquals($result, $result2);
         
         $this->client->dropCredentials($result["credentials"]["id"]);
-
 	}
 
     /**
-     * @expectedException Doctrine\DBAL\DBALException
-     * @expectedExceptionMessageRegExp /^(.)*access violation(.)*$/m
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessageRegExp /SQLSTATE\[42501\]: Insufficient privilege: 7 ERROR:  permission denied for schema \w+/
      */
     public function testWriteWithReadCredentials()
     {
         $result = $this->client->getCredentials("read");
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
+        $conn->exec("SET search_path to {$result["credentials"]["schema"]};");
         $conn->exec("CREATE TABLE test (id INT NOT NULL);");
     }
 
@@ -116,6 +116,7 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 		$this->assertArrayHasKey("db", $result["credentials"]);
 		$this->assertArrayHasKey("password", $result["credentials"]);
 		$this->assertArrayHasKey("user", $result["credentials"]);
+		$this->assertArrayHasKey("schema", $result["credentials"]);
 		$this->assertArrayHasKey("inUse", $result);
         $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
@@ -137,6 +138,7 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("db", $result["credentials"]);
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("schema", $result["credentials"]);
         $this->assertArrayHasKey("inUse", $result);
         $this->client->dropCredentials($result["credentials"]["id"]);
    	}
@@ -208,7 +210,8 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $resultSecond = $this->client->getCredentials("read");
 
         $this->assertEquals($resultFirst["credentials"]["db"], $resultSecond["credentials"]["db"]);
-
+        $this->assertNotEquals($resultFirst["credentials"]["user"], $resultSecond["credentials"]["user"]);
+        $this->assertEquals($resultFirst["credentials"]["schema"], $resultSecond["credentials"]["schema"]);
 
         $this->client->dropCredentials($resultFirst["credentials"]["id"]);
         $this->client->dropCredentials($resultSecond["credentials"]["id"]);
@@ -234,7 +237,9 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
             'user' => $credentials["user"],
             'password' => $credentials["password"],
             'dbname' => $credentials["db"],
-            "driver" => "pdo_mysql"
+            'schema' => $credentials["schema"],
+            'port' => 5439,
+            "driver" => "pdo_pgsql"
         );
 
         $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams);
