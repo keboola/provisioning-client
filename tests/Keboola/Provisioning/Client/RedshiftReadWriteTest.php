@@ -217,6 +217,35 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $this->client->dropCredentials($resultSecond["credentials"]["id"]);
     }
 
+    /**
+     *
+     */
+    public function testKeepSchema()
+    {
+        $write = $this->client->getCredentials("write");
+        $read = $this->client->getCredentials("read");
+
+        $connectionRead = $this->connect($read["credentials"]);
+        $this->assertCount(1, $connectionRead->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$read["credentials"]["schema"]}';"));
+        $connectionRead->close();
+
+        $connectionWrite = $this->connect($write["credentials"]);
+        $this->assertCount(1, $connectionWrite->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$write["credentials"]["schema"]}';"));
+        $connectionWrite->close();
+
+        $this->client->dropCredentials($write["credentials"]["id"]);
+
+        $this->assertFalse($this->dbConnection($write["credentials"]));
+
+        $connectionRead = $this->connect($read["credentials"]);
+        $this->assertCount(1, $connectionRead->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$read["credentials"]["schema"]}';"));
+        $connectionRead->close();
+
+        $this->client->dropCredentials($read["credentials"]["id"]);
+
+        $this->assertFalse($this->dbConnection($read["credentials"]));
+    }
+
 	/**
 	 * @expectedException Keboola\Provisioning\CredentialsNotFoundException
 	 * @expectedExceptionMessage Credentials not found.
@@ -271,6 +300,8 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
             $conn = $this->connect($credentials);
             $this->dbQuery($conn);
         } catch(\Doctrine\DBAL\DBALException $e) {
+            return false;
+        } catch(\PDOException $e) {
             return false;
         }
         return true;

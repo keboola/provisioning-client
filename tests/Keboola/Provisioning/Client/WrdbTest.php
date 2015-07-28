@@ -224,6 +224,22 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 	}
 
     /**
+     *
+     */
+    public function testKeepDatabase()
+    {
+        $write = $this->client->getCredentials("write");
+        $read = $this->client->getCredentials("read");
+        $this->assertTrue($this->dbConnection($write["credentials"]));
+        $this->assertTrue($this->dbConnection($read["credentials"]));
+        $this->client->dropCredentials($write["credentials"]["id"]);
+        $this->assertFalse($this->dbConnection($write["credentials"]));
+        $this->assertTrue($this->dbConnection($read["credentials"]));
+        $this->client->dropCredentials($read["credentials"]["id"]);
+        $this->assertFalse($this->dbConnection($read["credentials"]));
+    }
+
+    /**
      * @param $credentials
      * @return \Doctrine\DBAL\Connection
      */
@@ -266,6 +282,8 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
             $conn = $this->connect($credentials);
             $this->dbQuery($conn);
         } catch(\Doctrine\DBAL\DBALException $e) {
+            return false;
+        } catch(\PDOException $e) {
             return false;
         }
         return true;
