@@ -96,8 +96,8 @@ class Client
 	 */
 	public function getCredentials($type="transformations")
 	{
-		$response = $this->createCredentialsRequest($type);
-		unset($response["status"]);
+		$created = $this->createCredentialsRequest($type);
+        $response = $this->getCredentialsByIdRequest($created["credentials"]["id"])["credentials"];
 		return $response;
 	}
 
@@ -110,11 +110,11 @@ class Client
    	public function getExistingCredentials($type="transformations")
    	{
         try {
-            $response = $this->getCredentialsRequest($type);
+            $created = $this->getCredentialsRequest($type);
+            $response = $this->getCredentialsByIdRequest($created["credentials"]["id"])["credentials"];
         } catch (CredentialsNotFoundException $e) {
             return false;
         }
-   		unset($response["status"]);
    		return $response;
    	}
 
@@ -123,8 +123,7 @@ class Client
 	 * @return mixed
 	 */
 	public function getCredentialsById($id) {
-		$response = $this->getCredentialsByIdRequest($id);
-		unset($response["status"]);
+		$response = $this->getCredentialsByIdRequest($id)["credentials"];
 		return $response;
 	}
 

@@ -17,17 +17,12 @@ First argument to `Client` constructor is database backend, which may be either 
 
 ```
 array (
-  'url' => 'redshift/foo',
-  'id' => 'foo',
-  'credentials' => 
-  array (
     'id' => 'foo',
     'hostname' => 'ACMEdatabseServerAddress',
     'db' => 'ACMEDatabse',
     'password' => 'ACMEPassword',
     'user' => 'Wile.E.Coyote',
     'schema' => 'ACMESchema',
-  ),
 )
 ```
 

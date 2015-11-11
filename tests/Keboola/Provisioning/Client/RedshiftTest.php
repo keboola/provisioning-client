@@ -54,21 +54,20 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
     public function testCreateTransformationCredentials()
     {
         $result = $this->client->getCredentials();
-        $this->assertArrayHasKey("credentials", $result);
-        $this->assertArrayHasKey("id", $result["credentials"]);
-        $this->assertArrayHasKey("hostname", $result["credentials"]);
-        $this->assertArrayHasKey("db", $result["credentials"]);
-        $this->assertArrayHasKey("password", $result["credentials"]);
-        $this->assertArrayHasKey("user", $result["credentials"]);
-        $this->assertArrayHasKey("schema", $result["credentials"]);
-        $conn = $this->connect($result["credentials"]);
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
         $conn->close();
 
         $result2 = $this->client->getCredentials();
         $this->assertEquals($result, $result2);
 
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 
     }
 
@@ -78,21 +77,20 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
     public function testCreateSandboxCredentials()
     {
         $result = $this->client->getCredentials("sandbox");
-        $this->assertArrayHasKey("credentials", $result);
-        $this->assertArrayHasKey("id", $result["credentials"]);
-        $this->assertArrayHasKey("hostname", $result["credentials"]);
-        $this->assertArrayHasKey("db", $result["credentials"]);
-        $this->assertArrayHasKey("password", $result["credentials"]);
-        $this->assertArrayHasKey("user", $result["credentials"]);
-        $this->assertArrayHasKey("schema", $result["credentials"]);
-        $conn = $this->connect($result["credentials"]);
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
         $conn->close();
 
         $result2 = $this->client->getCredentials("sandbox");
         $this->assertEquals($result, $result2);
 
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 
     }
 
@@ -102,21 +100,20 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
     public function testCreateLuckyguessCredentials()
     {
         $result = $this->client->getCredentials("luckyguess");
-        $this->assertArrayHasKey("credentials", $result);
-        $this->assertArrayHasKey("id", $result["credentials"]);
-        $this->assertArrayHasKey("hostname", $result["credentials"]);
-        $this->assertArrayHasKey("db", $result["credentials"]);
-        $this->assertArrayHasKey("password", $result["credentials"]);
-        $this->assertArrayHasKey("user", $result["credentials"]);
-        $this->assertArrayHasKey("schema", $result["credentials"]);
-        $conn = $this->connect($result["credentials"]);
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
         $conn->close();
 
         $result2 = $this->client->getCredentials("luckyguess");
         $this->assertEquals($result, $result2);
 
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 
     }
 
@@ -127,17 +124,15 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
     public function testGetCredentials()
     {
         $result = $this->client->getCredentials();
-        $id = $result["credentials"]["id"];
+        $id = $result["id"];
         $result = $this->client->getCredentialsById($id);
-        $this->assertArrayHasKey("credentials", $result);
-        $this->assertArrayHasKey("id", $result["credentials"]);
-        $this->assertArrayHasKey("hostname", $result["credentials"]);
-        $this->assertArrayHasKey("db", $result["credentials"]);
-        $this->assertArrayHasKey("password", $result["credentials"]);
-        $this->assertArrayHasKey("user", $result["credentials"]);
-        $this->assertArrayHasKey("schema", $result["credentials"]);
-        $this->assertArrayHasKey("inUse", $result);
-        $conn = $this->connect($result["credentials"]);
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
         $conn->close();
         $this->client->dropCredentials($id);
@@ -151,15 +146,13 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         $this->assertFalse($this->client->getExistingCredentials());
         $this->client->getCredentials();
         $result = $this->client->getExistingCredentials();
-        $this->assertArrayHasKey("credentials", $result);
-        $this->assertArrayHasKey("id", $result["credentials"]);
-        $this->assertArrayHasKey("hostname", $result["credentials"]);
-        $this->assertArrayHasKey("db", $result["credentials"]);
-        $this->assertArrayHasKey("password", $result["credentials"]);
-        $this->assertArrayHasKey("user", $result["credentials"]);
-        $this->assertArrayHasKey("schema", $result["credentials"]);
-        $this->assertArrayHasKey("inUse", $result);
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $this->client->dropCredentials($result["id"]);
     }
 
     /**
@@ -177,9 +170,9 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
     public function testKillProcesses()
     {
         $result = $this->client->getCredentials();
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
-        $id = $result["credentials"]["id"];
+        $id = $result["id"];
         $result = $this->client->killProcesses($id);
         $this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
@@ -203,17 +196,17 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
     public function testDropCredentials()
     {
         $result = $this->client->getCredentials();
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->assertTrue($this->dbQuery($conn));
-        $id = $result["credentials"]["id"];
+        $id = $result["id"];
         $result = $this->client->dropCredentials($id);
         $this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
         $conn->close();
 
         $result = $this->client->getCredentials("sandbox");
-        $id = $result["credentials"]["id"];
-        $conn = $this->connect($result["credentials"]);
+        $id = $result["id"];
+        $conn = $this->connect($result);
         $result = $this->client->dropCredentials($id);
         $this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
@@ -243,7 +236,7 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         $sapiClient->createTable("out.c-redshift", "test", $csv);
 
         $result = $this->client->getCredentials();
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
 
         $data = $conn->fetchAll("SELECT * FROM \"in.c-redshift\".\"test\" ORDER BY \"id\" ASC;");

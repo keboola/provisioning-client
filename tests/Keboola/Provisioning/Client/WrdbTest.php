@@ -37,13 +37,12 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 	public function testCreateWriteCredentials()
 	{
 		$result = $this->client->getCredentials("write");
-		$this->assertArrayHasKey("credentials", $result);
-		$this->assertArrayHasKey("id", $result["credentials"]);
-		$this->assertArrayHasKey("hostname", $result["credentials"]);
-		$this->assertArrayHasKey("db", $result["credentials"]);
-		$this->assertArrayHasKey("password", $result["credentials"]);
-		$this->assertArrayHasKey("user", $result["credentials"]);
-        $conn = $this->connect($result["credentials"]);
+		$this->assertArrayHasKey("id", $result);
+		$this->assertArrayHasKey("hostname", $result);
+		$this->assertArrayHasKey("db", $result);
+		$this->assertArrayHasKey("password", $result);
+		$this->assertArrayHasKey("user", $result);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
         $conn->exec("CREATE TABLE test (id int(11) NOT NULL);");
         $conn->exec("DROP TABLE test;");
@@ -53,18 +52,18 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $result2 = $this->client->getCredentials("write");
         $this->assertEquals($result, $result2);
 
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 	}
 
     public function testWriteWithWriteCredentials()
     {
         $result = $this->client->getCredentials("write");
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
         $conn->exec("CREATE TABLE test (id INT NOT NULL);");
         $conn->exec("DROP TABLE test;");
         $conn->close();
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
     }
 
 	/**
@@ -73,20 +72,19 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 	public function testCreateReadCredentials()
 	{
 		$result = $this->client->getCredentials("read");
-		$this->assertArrayHasKey("credentials", $result);
-		$this->assertArrayHasKey("id", $result["credentials"]);
-		$this->assertArrayHasKey("hostname", $result["credentials"]);
-		$this->assertArrayHasKey("db", $result["credentials"]);
-		$this->assertArrayHasKey("password", $result["credentials"]);
-		$this->assertArrayHasKey("user", $result["credentials"]);
-        $conn = $this->connect($result["credentials"]);
+		$this->assertArrayHasKey("id", $result);
+		$this->assertArrayHasKey("hostname", $result);
+		$this->assertArrayHasKey("db", $result);
+		$this->assertArrayHasKey("password", $result);
+		$this->assertArrayHasKey("user", $result);
+        $conn = $this->connect($result);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
 
         $result2 = $this->client->getCredentials("read");
         $this->assertEquals($result, $result2);
         
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 
 	}
 
@@ -97,7 +95,7 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
     public function testWriteWithReadCredentials()
     {
         $result = $this->client->getCredentials("read");
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
         $conn->exec("CREATE TABLE test (id INT NOT NULL);");
     }
@@ -108,19 +106,17 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 	public function testGetCredentials()
 	{
 		$result = $this->client->getCredentials("write");
-		$id = $result["credentials"]["id"];
+		$id = $result["id"];
 		$result = $this->client->getCredentialsById($id);
-		$this->assertArrayHasKey("credentials", $result);
-		$this->assertArrayHasKey("id", $result["credentials"]);
-		$this->assertArrayHasKey("hostname", $result["credentials"]);
-		$this->assertArrayHasKey("db", $result["credentials"]);
-		$this->assertArrayHasKey("password", $result["credentials"]);
-		$this->assertArrayHasKey("user", $result["credentials"]);
-		$this->assertArrayHasKey("inUse", $result);
-        $conn = $this->connect($result["credentials"]);
+		$this->assertArrayHasKey("id", $result);
+		$this->assertArrayHasKey("hostname", $result);
+		$this->assertArrayHasKey("db", $result);
+		$this->assertArrayHasKey("password", $result);
+		$this->assertArrayHasKey("user", $result);
+        $conn = $this->connect($result);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 	}
 
     /**
@@ -131,14 +127,12 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $this->assertFalse($this->client->getExistingCredentials("write"));
         $this->client->getCredentials("write");
         $result = $this->client->getExistingCredentials("write");
-        $this->assertArrayHasKey("credentials", $result);
-        $this->assertArrayHasKey("id", $result["credentials"]);
-        $this->assertArrayHasKey("hostname", $result["credentials"]);
-        $this->assertArrayHasKey("db", $result["credentials"]);
-        $this->assertArrayHasKey("password", $result["credentials"]);
-        $this->assertArrayHasKey("user", $result["credentials"]);
-        $this->assertArrayHasKey("inUse", $result);
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->client->dropCredentials($result["id"]);
    	}
 
 	/**
@@ -156,9 +150,9 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 	public function testKillProcesses()
 	{
 		$result = $this->client->getCredentials("write");
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
-        $id = $result["credentials"]["id"];
+        $id = $result["id"];
 		$result = $this->client->killProcesses($id);
 		$this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
@@ -182,17 +176,17 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
 	public function testDropCredentials()
 	{
 		$result = $this->client->getCredentials("write");
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->assertTrue($this->dbQuery($conn));
-		$id = $result["credentials"]["id"];
+		$id = $result["id"];
 		$result = $this->client->dropCredentials($id);
 		$this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
         $conn->close();
 
 		$result = $this->client->getCredentials("read");
-		$id = $result["credentials"]["id"];
-        $conn = $this->connect($result["credentials"]);
+		$id = $result["id"];
+        $conn = $this->connect($result);
 		$result = $this->client->dropCredentials($id);
 		$this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
@@ -207,11 +201,11 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
         $resultFirst = $this->client->getCredentials("write");
         $resultSecond = $this->client->getCredentials("read");
 
-        $this->assertEquals($resultFirst["credentials"]["db"], $resultSecond["credentials"]["db"]);
+        $this->assertEquals($resultFirst["db"], $resultSecond["db"]);
 
 
-        $this->client->dropCredentials($resultFirst["credentials"]["id"]);
-        $this->client->dropCredentials($resultSecond["credentials"]["id"]);
+        $this->client->dropCredentials($resultFirst["id"]);
+        $this->client->dropCredentials($resultSecond["id"]);
     }
 
 	/**
@@ -230,13 +224,13 @@ class Keboola_ProvisioningClient_WrdbTest extends \ProvisioningTestCase
     {
         $write = $this->client->getCredentials("write");
         $read = $this->client->getCredentials("read");
-        $this->assertTrue($this->dbConnection($write["credentials"]));
-        $this->assertTrue($this->dbConnection($read["credentials"]));
-        $this->client->dropCredentials($write["credentials"]["id"]);
-        $this->assertFalse($this->dbConnection($write["credentials"]));
-        $this->assertTrue($this->dbConnection($read["credentials"]));
-        $this->client->dropCredentials($read["credentials"]["id"]);
-        $this->assertFalse($this->dbConnection($read["credentials"]));
+        $this->assertTrue($this->dbConnection($write));
+        $this->assertTrue($this->dbConnection($read));
+        $this->client->dropCredentials($write["id"]);
+        $this->assertFalse($this->dbConnection($write));
+        $this->assertTrue($this->dbConnection($read));
+        $this->client->dropCredentials($read["id"]);
+        $this->assertFalse($this->dbConnection($read));
     }
 
     /**

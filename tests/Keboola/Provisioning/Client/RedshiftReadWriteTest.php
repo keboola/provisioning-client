@@ -37,33 +37,32 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
 	public function testCreateWriteCredentials()
 	{
 		$result = $this->client->getCredentials("write");
-		$this->assertArrayHasKey("credentials", $result);
-		$this->assertArrayHasKey("id", $result["credentials"]);
-		$this->assertArrayHasKey("hostname", $result["credentials"]);
-		$this->assertArrayHasKey("db", $result["credentials"]);
-		$this->assertArrayHasKey("password", $result["credentials"]);
-		$this->assertArrayHasKey("user", $result["credentials"]);
-		$this->assertArrayHasKey("schema", $result["credentials"]);
-        $conn = $this->connect($result["credentials"]);
+		$this->assertArrayHasKey("id", $result);
+		$this->assertArrayHasKey("hostname", $result);
+		$this->assertArrayHasKey("db", $result);
+		$this->assertArrayHasKey("password", $result);
+		$this->assertArrayHasKey("user", $result);
+		$this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
         $conn->close();
 
         $result2 = $this->client->getCredentials("write");
         $this->assertEquals($result, $result2);
 
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 	}
 
     public function testWriteWithWriteCredentials()
     {
         $result = $this->client->getCredentials("write");
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
-        $conn->exec("SET search_path to {$result["credentials"]["schema"]};");
+        $conn->exec("SET search_path to {$result["schema"]};");
         $conn->exec("CREATE TABLE test (id INT NOT NULL);");
         $conn->exec("DROP TABLE test;");
         $conn->close();
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
     }
 
 	/**
@@ -72,21 +71,20 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
 	public function testCreateReadCredentials()
 	{
 		$result = $this->client->getCredentials("read");
-		$this->assertArrayHasKey("credentials", $result);
-		$this->assertArrayHasKey("id", $result["credentials"]);
-		$this->assertArrayHasKey("hostname", $result["credentials"]);
-		$this->assertArrayHasKey("db", $result["credentials"]);
-		$this->assertArrayHasKey("password", $result["credentials"]);
-		$this->assertArrayHasKey("user", $result["credentials"]);
-		$this->assertArrayHasKey("schema", $result["credentials"]);
-        $conn = $this->connect($result["credentials"]);
+		$this->assertArrayHasKey("id", $result);
+		$this->assertArrayHasKey("hostname", $result);
+		$this->assertArrayHasKey("db", $result);
+		$this->assertArrayHasKey("password", $result);
+		$this->assertArrayHasKey("user", $result);
+		$this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
 
         $result2 = $this->client->getCredentials("read");
         $this->assertEquals($result, $result2);
         
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 	}
 
     /**
@@ -96,9 +94,9 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
     public function testWriteWithReadCredentials()
     {
         $result = $this->client->getCredentials("read");
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
-        $conn->exec("SET search_path to {$result["credentials"]["schema"]};");
+        $conn->exec("SET search_path to {$result["schema"]};");
         $conn->exec("CREATE TABLE test (id INT NOT NULL);");
     }
 
@@ -108,20 +106,18 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
 	public function testGetCredentials()
 	{
 		$result = $this->client->getCredentials("write");
-		$id = $result["credentials"]["id"];
+		$id = $result["id"];
 		$result = $this->client->getCredentialsById($id);
-		$this->assertArrayHasKey("credentials", $result);
-		$this->assertArrayHasKey("id", $result["credentials"]);
-		$this->assertArrayHasKey("hostname", $result["credentials"]);
-		$this->assertArrayHasKey("db", $result["credentials"]);
-		$this->assertArrayHasKey("password", $result["credentials"]);
-		$this->assertArrayHasKey("user", $result["credentials"]);
-		$this->assertArrayHasKey("schema", $result["credentials"]);
-		$this->assertArrayHasKey("inUse", $result);
-        $conn = $this->connect($result["credentials"]);
+		$this->assertArrayHasKey("id", $result);
+		$this->assertArrayHasKey("hostname", $result);
+		$this->assertArrayHasKey("db", $result);
+		$this->assertArrayHasKey("password", $result);
+		$this->assertArrayHasKey("user", $result);
+		$this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->client->dropCredentials($result["id"]);
 	}
 
     /**
@@ -132,15 +128,13 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $this->assertFalse($this->client->getExistingCredentials("write"));
         $this->client->getCredentials("write");
         $result = $this->client->getExistingCredentials("write");
-        $this->assertArrayHasKey("credentials", $result);
-        $this->assertArrayHasKey("id", $result["credentials"]);
-        $this->assertArrayHasKey("hostname", $result["credentials"]);
-        $this->assertArrayHasKey("db", $result["credentials"]);
-        $this->assertArrayHasKey("password", $result["credentials"]);
-        $this->assertArrayHasKey("user", $result["credentials"]);
-        $this->assertArrayHasKey("schema", $result["credentials"]);
-        $this->assertArrayHasKey("inUse", $result);
-        $this->client->dropCredentials($result["credentials"]["id"]);
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $this->client->dropCredentials($result["id"]);
    	}
 
 	/**
@@ -158,9 +152,9 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
 	public function testKillProcesses()
 	{
 		$result = $this->client->getCredentials("write");
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->dbQuery($conn);
-        $id = $result["credentials"]["id"];
+        $id = $result["id"];
 		$result = $this->client->killProcesses($id);
 		$this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
@@ -184,17 +178,17 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
 	public function testDropCredentials()
 	{
 		$result = $this->client->getCredentials("write");
-        $conn = $this->connect($result["credentials"]);
+        $conn = $this->connect($result);
         $this->assertTrue($this->dbQuery($conn));
-		$id = $result["credentials"]["id"];
+		$id = $result["id"];
 		$result = $this->client->dropCredentials($id);
 		$this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
         $conn->close();
 
 		$result = $this->client->getCredentials("read");
-		$id = $result["credentials"]["id"];
-        $conn = $this->connect($result["credentials"]);
+		$id = $result["id"];
+        $conn = $this->connect($result);
 		$result = $this->client->dropCredentials($id);
 		$this->assertTrue($result);
         $this->assertFalse($this->dbQuery($conn));
@@ -209,12 +203,12 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $resultFirst = $this->client->getCredentials("write");
         $resultSecond = $this->client->getCredentials("read");
 
-        $this->assertEquals($resultFirst["credentials"]["db"], $resultSecond["credentials"]["db"]);
-        $this->assertNotEquals($resultFirst["credentials"]["user"], $resultSecond["credentials"]["user"]);
-        $this->assertEquals($resultFirst["credentials"]["schema"], $resultSecond["credentials"]["schema"]);
+        $this->assertEquals($resultFirst["db"], $resultSecond["db"]);
+        $this->assertNotEquals($resultFirst["user"], $resultSecond["user"]);
+        $this->assertEquals($resultFirst["schema"], $resultSecond["schema"]);
 
-        $this->client->dropCredentials($resultFirst["credentials"]["id"]);
-        $this->client->dropCredentials($resultSecond["credentials"]["id"]);
+        $this->client->dropCredentials($resultFirst["id"]);
+        $this->client->dropCredentials($resultSecond["id"]);
     }
 
     /**
@@ -225,25 +219,25 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $write = $this->client->getCredentials("write");
         $read = $this->client->getCredentials("read");
 
-        $connectionRead = $this->connect($read["credentials"]);
-        $this->assertCount(1, $connectionRead->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$read["credentials"]["schema"]}';"));
+        $connectionRead = $this->connect($read);
+        $this->assertCount(1, $connectionRead->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$read["schema"]}';"));
         $connectionRead->close();
 
-        $connectionWrite = $this->connect($write["credentials"]);
-        $this->assertCount(1, $connectionWrite->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$write["credentials"]["schema"]}';"));
+        $connectionWrite = $this->connect($write);
+        $this->assertCount(1, $connectionWrite->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$write["schema"]}';"));
         $connectionWrite->close();
 
-        $this->client->dropCredentials($write["credentials"]["id"]);
+        $this->client->dropCredentials($write["id"]);
 
-        $this->assertFalse($this->dbConnection($write["credentials"]));
+        $this->assertFalse($this->dbConnection($write));
 
-        $connectionRead = $this->connect($read["credentials"]);
-        $this->assertCount(1, $connectionRead->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$read["credentials"]["schema"]}';"));
+        $connectionRead = $this->connect($read);
+        $this->assertCount(1, $connectionRead->fetchAll("SELECT * FROM pg_namespace WHERE nspname = '{$read["schema"]}';"));
         $connectionRead->close();
 
-        $this->client->dropCredentials($read["credentials"]["id"]);
+        $this->client->dropCredentials($read["id"]);
 
-        $this->assertFalse($this->dbConnection($read["credentials"]));
+        $this->assertFalse($this->dbConnection($read));
     }
 
 	/**
