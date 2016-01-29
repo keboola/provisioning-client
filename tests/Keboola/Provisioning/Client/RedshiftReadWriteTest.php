@@ -97,8 +97,47 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $connWrite->exec("DROP TABLE test;");
         $connWrite->close();
         $this->client->dropCredentials($resultWrite["id"]);
+    }
 
+    /**
+     *
+     */
+    public function testCreateReadCredentialsLateWrite()
+    {
+        $resultWrite = $this->client->getCredentials("write");
+        $connWrite = $this->connect($resultWrite);
+        $this->dbQuery($connWrite);
+        $connWrite->exec("SET search_path to {$resultWrite["schema"]};");
 
+        $result = $this->client->getCredentials("read");
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
+        $this->assertTrue($this->dbQuery($conn));
+        $conn->exec("SET search_path to {$result["schema"]};");
+
+        // write table later
+        $connWrite->exec("CREATE TABLE test (id INT NOT NULL);");
+
+        // reload credentials
+        $this->client->getCredentials("read");
+
+        // select from table
+        $conn->exec("SELECT * FROM test");
+        $conn->close();
+
+        $result2 = $this->client->getCredentials("read");
+        $this->assertEquals($result, $result2);
+
+        $this->client->dropCredentials($result["id"]);
+
+        $connWrite->exec("DROP TABLE test;");
+        $connWrite->close();
+        $this->client->dropCredentials($resultWrite["id"]);
     }
 
     /**
