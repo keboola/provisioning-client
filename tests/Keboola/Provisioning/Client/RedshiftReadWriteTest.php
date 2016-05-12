@@ -303,6 +303,27 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
     }
 
     /**
+     * @expectedException  \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessageRegExp  /SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info/
+     */
+    public function testMetaQueryRead() {
+        $result = $this->client->getCredentials("read");
+        $conn = $this->connect($result);
+        $conn->query("SELECT * FROM SVV_TABLE_INFO;");
+    }
+
+    /**
+     * @expectedException  \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessageRegExp  /SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info/
+     */
+    public function testMetaQueryWrhite() {
+        $result = $this->client->getCredentials("write");
+        $conn = $this->connect($result);
+        $conn->query("SELECT * FROM SVV_TABLE_INFO;");
+    }
+
+
+    /**
      * @param $credentials
      * @return \Doctrine\DBAL\Connection
      */

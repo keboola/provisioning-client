@@ -26,7 +26,11 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         \ProvisioningTestCase::cleanUp("redshift", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift", "transformations", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift", "luckyguess", PROVISIONING_API_TOKEN);
+    }
 
+    public function setUp()
+    {
+        $this->client = new Client("redshift", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
         $sapiClient = new \Keboola\StorageApi\Client(array("token" => PROVISIONING_API_TOKEN));
         if ($sapiClient->bucketExists("in.c-redshift")) {
             foreach($sapiClient->listTables("in.c-redshift") as $table) {
@@ -40,12 +44,22 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
             }
             $sapiClient->dropBucket("out.c-redshift");
         }
-
     }
 
-    public function setUp()
-    {
-        $this->client = new Client("redshift", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
+    public function tearDown() {
+        $sapiClient = new \Keboola\StorageApi\Client(array("token" => PROVISIONING_API_TOKEN));
+        if ($sapiClient->bucketExists("in.c-redshift")) {
+            foreach($sapiClient->listTables("in.c-redshift") as $table) {
+                $sapiClient->dropTable($table["id"]);
+            }
+            $sapiClient->dropBucket("in.c-redshift");
+        }
+        if ($sapiClient->bucketExists("out.c-redshift")) {
+            foreach($sapiClient->listTables("out.c-redshift") as $table) {
+                $sapiClient->dropTable($table["id"]);
+            }
+            $sapiClient->dropBucket("out.c-redshift");
+        }
     }
 
     /**
@@ -253,6 +267,34 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
 
         $conn->close();
     }
+
+
+    public function testMetaQueryTransformation() {
+        $sapiClient = new \Keboola\StorageApi\Client(array("token" => PROVISIONING_API_TOKEN));
+        $csv = new \Keboola\Csv\CsvFile(ROOT_PATH . "/tests/data/table.csv");
+
+        $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_IN, "provisioning test", "redshift");
+        $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_OUT, "provisioning test", "redshift");
+        $sapiClient->createTable("in.c-redshift", "test", $csv);
+        $sapiClient->createTable("out.c-redshift", "test", $csv);
+
+        $result = $this->client->getCredentials();
+        $conn = $this->connect($result);
+        $result = $conn->fetchAll("SELECT * FROM SVV_TABLE_INFO;");
+        $this->assertGreaterThan(0, count($result));
+        $conn->close();
+    }
+
+    /**
+     * @expectedException  \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessageRegExp  /SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info/
+     */
+    public function testMetaQuerySandbox() {
+        $result = $this->client->getCredentials("sandbox");
+        $conn = $this->connect($result);
+        $conn->query("SELECT * FROM SVV_TABLE_INFO;");
+    }
+
 
     /**
      * @param $credentials
