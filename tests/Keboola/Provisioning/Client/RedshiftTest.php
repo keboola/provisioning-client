@@ -242,6 +242,11 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
     public function testBucketPermissions()
     {
         $sapiClient = new \Keboola\StorageApi\Client(array("token" => PROVISIONING_API_TOKEN));
+        $tokenInfo = $sapiClient->verifyToken();
+        if (in_array('transformation-force-staging', $tokenInfo["owner"]["features"])) {
+            $this->markTestSkipped("transformation-force-staging feature present");
+            return;
+        }
         $csv = new \Keboola\Csv\CsvFile(ROOT_PATH . "/tests/data/table.csv");
 
         $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_IN, "provisioning test", "redshift");
@@ -266,6 +271,33 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
         $this->assertEquals("test2", $data[1]["name"]);
 
         $conn->close();
+    }
+
+
+    /**
+     * @expectedException \Doctrine\DBAL\DBALException
+     * @expectedExceptionMessage SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for schema in.c-redshift
+     */
+    public function testBucketPermissionsTransformationForceStagingFeature()
+    {
+        $sapiClient = new \Keboola\StorageApi\Client(array("token" => PROVISIONING_API_TOKEN));
+        $tokenInfo = $sapiClient->verifyToken();
+        if (!in_array('transformation-force-staging', $tokenInfo["owner"]["features"])) {
+            $this->markTestSkipped("transformation-force-staging feature not present");
+            return;
+        }
+        $csv = new \Keboola\Csv\CsvFile(ROOT_PATH . "/tests/data/table.csv");
+
+        $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_IN, "provisioning test", "redshift");
+        $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_OUT, "provisioning test", "redshift");
+        $sapiClient->createTable("in.c-redshift", "test", $csv);
+        $sapiClient->createTable("out.c-redshift", "test", $csv);
+
+        $result = $this->client->getCredentials();
+        $conn = $this->connect($result);
+        $this->dbQuery($conn);
+
+        $conn->fetchAll("SELECT * FROM \"in.c-redshift\".\"test\" ORDER BY \"id\" ASC;");
     }
 
 
