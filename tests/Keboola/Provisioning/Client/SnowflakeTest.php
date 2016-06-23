@@ -197,15 +197,16 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     {
         $dsn = "Driver=SnowflakeDSIIDriver;Server=" . $credentials["hostname"];
         $dsn .= ";Port=443";
-        $dsn .= ";Schema=\"" . $credentials["schema"] . "\"";
-        $dsn .= ";Database=\"" . $credentials["db"] . "\"";
-        $dsn .= ";Warehouse=\"" . $credentials["warehouse"] . "\"";
 	    $dsn .= ";Tracing=0";
 	    $dsn .= ";Query_Timeout=30";
 	    $dsn .= ";Login_Timeout=30";
 
         try {
             $connection = odbc_connect($dsn, $credentials["user"], $credentials["password"]);
+
+            odbc_exec($connection, "USE DATABASE \"" . $credentials["db"] . "\"");
+            odbc_exec($connection, "USE SCHEMA \"" . $credentials["schema"] ."\"");
+            odbc_exec($connection, "USE WAREHOUSE \"" . $credentials["warehouse"] ."\"");
         } catch (\Exception $e) {
             throw new \Keboola\Provisioning\Exception("Initializing Snowflake connection failed: " . $e->getMessage(), "SNOWFLAKE_INIT_FAILED", $e);
         }
