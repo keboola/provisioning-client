@@ -143,6 +143,7 @@
             <env key="PROVISIONING_API_TOKEN_SECOND_PROJECT" value="${provisioning-api-token-second-project}"/>
 			<arg value="--configuration"/>
 			<arg path="phpunit-ci.xml.dist"/>
+			<arg value="--debug"/>
 		</exec>
 	</target>
 
