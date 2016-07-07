@@ -38,6 +38,12 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
             }
             $sapiClient->dropBucket("in.c-redshift");
         }
+        if ($sapiClient->bucketExists("in.c-UPPERCASE")) {
+            foreach($sapiClient->listTables("in.c-UPPERCASE") as $table) {
+                $sapiClient->dropTable($table["id"]);
+            }
+            $sapiClient->dropBucket("in.c-UPPERCASE");
+        }
         if ($sapiClient->bucketExists("out.c-redshift")) {
             foreach($sapiClient->listTables("out.c-redshift") as $table) {
                 $sapiClient->dropTable($table["id"]);
@@ -246,24 +252,25 @@ class Keboola_ProvisioningClient_RedshiftTest extends \ProvisioningTestCase
 
         $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_IN, "provisioning test", "redshift");
         $sapiClient->createBucket("redshift", \Keboola\StorageApi\Client::STAGE_OUT, "provisioning test", "redshift");
+        $sapiClient->createBucket("UPPERCASE", \Keboola\StorageApi\Client::STAGE_IN, "provisioning test", "redshift");
         $sapiClient->createTable("in.c-redshift", "test", $csv);
+        $sapiClient->createTable("in.c-redshift", "UPPERCASE", $csv);
         $sapiClient->createTable("out.c-redshift", "test", $csv);
+        $sapiClient->createTable("out.c-redshift", "UPPERCASE", $csv);
+        $sapiClient->createTable("in.c-UPPERCASE", "test", $csv);
+        $sapiClient->createTable("in.c-UPPERCASE", "UPPERCASE", $csv);
 
         $result = $this->client->getCredentials();
         $conn = $this->connect($result);
         $this->dbQuery($conn);
 
-        $data = $conn->fetchAll("SELECT * FROM \"in.c-redshift\".\"test\" ORDER BY \"id\" ASC;");
-        $this->assertEquals("1", $data[0]["id"]);
-        $this->assertEquals("test1", $data[0]["name"]);
-        $this->assertEquals("2", $data[1]["id"]);
-        $this->assertEquals("test2", $data[1]["name"]);
 
-        $data = $conn->fetchAll("SELECT * FROM \"out.c-redshift\".\"test\" ORDER BY \"id\" ASC;");
-        $this->assertEquals("1", $data[0]["id"]);
-        $this->assertEquals("test1", $data[0]["name"]);
-        $this->assertEquals("2", $data[1]["id"]);
-        $this->assertEquals("test2", $data[1]["name"]);
+        $this->assertCount(2, $conn->fetchAll("SELECT * FROM \"in.c-redshift\".\"test\";"));
+        $this->assertCount(2, $conn->fetchAll("SELECT * FROM \"in.c-redshift\".\"uppercase\""));
+        $this->assertCount(2, $conn->fetchAll("SELECT * FROM \"out.c-redshift\".\"test\""));
+        $this->assertCount(2, $conn->fetchAll("SELECT * FROM \"out.c-redshift\".\"uppercase\""));
+        $this->assertCount(2, $conn->fetchAll("SELECT * FROM \"in.c-uppercase\".\"test\""));
+        $this->assertCount(2, $conn->fetchAll("SELECT * FROM \"in.c-uppercase\".\"uppercase\""));
 
         $conn->close();
     }
