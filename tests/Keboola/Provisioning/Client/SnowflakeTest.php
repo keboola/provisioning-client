@@ -189,6 +189,19 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     }
 
     /**
+     *
+     */
+    public function testDropWorkspace()
+    {
+        $result = $this->client->getCredentials();
+        $workspaceId = $result["workspaceId"];
+        $storageApiClient = new \Keboola\StorageApi\Client(["token" => PROVISIONING_API_TOKEN]);
+        $storageApiClient->apiDelete("storage/workspaces/{$workspaceId}");
+        $result = $this->client->getCredentials();
+        $this->assertNotEquals($result["workspaceId"], $workspaceId);
+    }
+
+    /**
      * @param $credentials
      * @return resource
      * @throws \Keboola\Provisioning\Exception
