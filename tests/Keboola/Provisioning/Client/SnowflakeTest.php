@@ -18,6 +18,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         \ProvisioningTestCase::cleanUp("snowflake", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("snowflake", "transformations", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("snowflake", "luckyguess", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("snowflake", "writer", PROVISIONING_API_TOKEN);
     }
 
     public static function tearDownAfterClass()
@@ -26,6 +27,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         \ProvisioningTestCase::cleanUp("snowflake", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("snowflake", "transformations", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("snowflake", "luckyguess", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("snowflake", "writer", PROVISIONING_API_TOKEN);
     }
 
     public function setUp()
@@ -103,6 +105,30 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
 
         $this->client->dropCredentials($result["id"]);
 
+    }
+
+
+    /**
+     *
+     */
+    public function testCreateWriterCredentials()
+    {
+        $result = $this->client->getCredentials("writer");
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $this->assertArrayHasKey("warehouse", $result);
+        $conn = $this->connect($result);
+        $this->dbQuery($conn);
+        odbc_close($conn);
+
+        $result2 = $this->client->getCredentials("writer");
+        $this->assertEquals($result, $result2);
+
+        $this->client->dropCredentials($result["id"]);
     }
 
     /**

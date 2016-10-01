@@ -18,6 +18,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         \ProvisioningTestCase::cleanUp("redshift-workspace", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift-workspace", "transformations", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift-workspace", "luckyguess", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift-workspace", "writer", PROVISIONING_API_TOKEN);
     }
 
     public static function tearDownAfterClass()
@@ -25,7 +26,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("redshift-workspace", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift-workspace", "transformations", PROVISIONING_API_TOKEN);
-        \ProvisioningTestCase::cleanUp("redshift-workspace", "luckyguess", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift-workspace", "writer", PROVISIONING_API_TOKEN);
     }
 
     public function setUp()
@@ -101,7 +102,29 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertEquals($result, $result2);
 
         $this->client->dropCredentials($result["id"]);
+    }
 
+
+    /**
+     *
+     */
+    public function testCreateWriterCredentials()
+    {
+        $result = $this->client->getCredentials("writer");
+        $this->assertArrayHasKey("id", $result);
+        $this->assertArrayHasKey("hostname", $result);
+        $this->assertArrayHasKey("db", $result);
+        $this->assertArrayHasKey("password", $result);
+        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("schema", $result);
+        $conn = $this->connect($result);
+        $this->dbQuery($conn);
+        $conn->close();
+
+        $result2 = $this->client->getCredentials("writer");
+        $this->assertEquals($result, $result2);
+
+        $this->client->dropCredentials($result["id"]);
     }
 
     /**
