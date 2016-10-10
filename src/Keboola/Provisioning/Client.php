@@ -65,7 +65,7 @@ class Client
 	 * @param string $runId Storage API run Id.
 	 * @param string $url
 	 */
-	public function __construct($backend, $token, $runId, $url='https://syrup.keboola.com/provisioning')
+	public function __construct($backend, $token, $runId, $url = 'https://syrup.keboola.com/provisioning')
 	{
 		$this->setBackend($backend);
 		$this->setToken($token);
@@ -93,7 +93,7 @@ class Client
 	 * @param string $type
 	 * @return mixed
 	 */
-	public function getCredentials($type="transformations")
+	public function getCredentials($type = "transformations")
 	{
 		$created = $this->createCredentialsRequest($type);
         $response = $this->getCredentialsByIdRequest($created["credentials"]["id"])["credentials"];
@@ -106,7 +106,7 @@ class Client
      * @throws CredentialsNotFoundException
      * @throws \Exception
      */
-   	public function getExistingCredentials($type="transformations")
+   	public function getExistingCredentials($type = "transformations")
    	{
         try {
             $created = $this->getCredentialsRequest($type);
@@ -148,7 +148,7 @@ class Client
 	 * @param string $type
 	 * @return mixed
 	 */
-	private function createCredentialsRequest($type="transformations")
+	private function createCredentialsRequest($type = "transformations")
 	{
 		$body = array("type" => $type);
 		$request = $this->client->post($this->getBackend(), $this->getHeaders(), json_encode($body));
@@ -159,7 +159,7 @@ class Client
 	 * @param string $type
 	 * @return mixed
 	 */
-	private function getCredentialsRequest($type="transformations")
+	private function getCredentialsRequest($type = "transformations")
 	{
 		$request = $this->client->get($this->getBackend() . "?type=" . $type, $this->getHeaders());
 		return $this->sendRequest($request);

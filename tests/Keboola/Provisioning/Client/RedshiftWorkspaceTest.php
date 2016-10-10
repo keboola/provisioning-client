@@ -26,6 +26,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("redshift-workspace", "sandbox", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift-workspace", "transformations", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUp("redshift-workspace", "luckyguess", PROVISIONING_API_TOKEN);
         \ProvisioningTestCase::cleanUp("redshift-workspace", "writer", PROVISIONING_API_TOKEN);
     }
 
@@ -252,6 +253,21 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $conn = $this->connect($result);
         $conn->query("SELECT * FROM SVV_TABLE_INFO;");
     }
+
+
+    /**
+     *
+     */
+    public function testDropWorkspace()
+    {
+        $result = $this->client->getCredentials();
+        $workspaceId = $result["workspaceId"];
+        $storageApiClient = new \Keboola\StorageApi\Client(["token" => PROVISIONING_API_TOKEN]);
+        $storageApiClient->apiDelete("storage/workspaces/{$workspaceId}");
+        $result = $this->client->getCredentials();
+        $this->assertNotEquals($result["workspaceId"], $workspaceId);
+    }
+
 
     /**
      * @param $credentials
