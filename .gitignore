@@ -3,3 +3,6 @@ composer.lock
 cache.properties
 config.php
 vendor/*
+snowflake_linux_x8664_odbc.tgz
+.env
+composer.phar

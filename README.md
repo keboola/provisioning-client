@@ -79,3 +79,32 @@ require 'vendor/autoload.php';
 
 
 Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.md)
+
+
+## Development
+
+### Preparation
+
+- Create `.env` file and fill the missing info
+```
+PROVISIONING_API_URL=
+PROVISIONING_API_TOKEN=
+PROVISIONING_API_TOKEN_SECOND_PROJECT=
+```
+- Download Snowflake ODBC Driver from S3
+```
+docker-compose run --rm -e AWS_ACCESS_KEY=$AWS_ACCESS_KEY -e AWS_SECRET_KEY=$AWS_SECRET_KEY php php docker/downloadOdbcDriver.php
+```
+- Or download snowflake driver from Snowflake support and store it as `./snowflake_linux_x8664_odbc.tgz` 
+
+- Build Docker image
+```
+docker-compose build
+```
+
+### Tests Execution
+Run tests with following command.
+
+```
+docker-compose run --rm tests
+```
