@@ -8,6 +8,7 @@ use Guzzle\Plugin\Backoff\CurlBackoffStrategy;
 use Guzzle\Plugin\Backoff\ExponentialBackoffStrategy;
 use Guzzle\Plugin\Backoff\TruncatedBackoffStrategy;
 use Keboola\Provisioning\CredentialsNotFoundException;
+use Keboola\Syrup\ClientException;
 
 /**
  * Class Client
@@ -43,9 +44,13 @@ class Client
 	private $timeout = 900;
 
 	/**
-	 * @var \Guzzle\Http\Client $client
+	 * @var \Guzzle\Http\Client
 	 */
 	private $client = null;
+    /**
+     * @var \Keboola\Syrup\Client
+     */
+    private $syrupClient = null;
 
 	/**
 	 * @var string
@@ -57,15 +62,16 @@ class Client
 	 */
 	private $provisioningStorageToken = '';
 
-	/**
-     * Constructor.
+    /**
+     * Client constructor.
      *
-	 * @param string $backend Backend type, currently 'mysql' or 'redshift' is accepted.
-	 * @param string $token Storage API token.
-	 * @param string $runId Storage API run Id.
-	 * @param string $url
-	 */
-	public function __construct($backend, $token, $runId, $url = 'https://syrup.keboola.com/provisioning')
+     * @param $backend
+     * @param $token
+     * @param $runId
+     * @param string $url
+     * @param string $queueUrl
+     */
+	public function __construct($backend, $token, $runId, $url = 'https://syrup.keboola.com/provisioning', $queueUrl = '')
 	{
 		$this->setBackend($backend);
 		$this->setToken($token);
@@ -87,18 +93,46 @@ class Client
         $client->addSubscriber($maintenanceBackoff);
 
 		$this->client = $client;
+        $syrupUrl = substr($url, 0, strrpos($url, '/'));
+        $syrupClientOptions = [
+            'token' => $token,
+            'runId' => $runId,
+            'super' => 'provisioning',
+            'url' => $syrupUrl
+        ];
+        if ($queueUrl) {
+            $syrupClientOptions["queueUrl"] = $queueUrl;
+        }
+        $this->syrupClient = new \Keboola\Syrup\Client($syrupClientOptions);
 	}
 
-	/**
-	 * @param string $type
-	 * @return mixed
-	 */
-	public function getCredentials($type = "transformations")
-	{
-		$created = $this->createCredentialsRequest($type);
+    /**
+     * @param string $type
+     * @return mixed
+     */
+    public function getCredentials($type = "transformations")
+    {
+        $created = $this->createCredentialsRequest($type);
         $response = $this->getCredentialsByIdRequest($created["credentials"]["id"])["credentials"];
-		return $response;
-	}
+
+        return $response;
+    }
+
+    /**
+     * @param string $type
+     * @return array
+     * @throws Exception
+     */
+    public function getCredentialsAsync($type = "rstudio")
+    {
+        try {
+            $created = $this->syrupClient->runAsyncAction("async/{$this->getBackend()}", "POST", ["body" => ["type" => $type]]);
+            $response = $this->getCredentialsByIdRequest($created["result"]["credentials"]["id"])["credentials"];
+        } catch (ClientException $e) {
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
+        }
+        return $response;
+    }
 
     /**
      * @param string $type
@@ -135,6 +169,20 @@ class Client
 		return true;
 	}
 
+    /**
+     * @param $id
+     * @return array|bool
+     * @throws Exception
+     */
+   	public function dropCredentialsAsync($id) {
+        try {
+            $this->syrupClient->runAsyncAction("async/{$this->getBackend()}/{$id}", "DELETE");
+        } catch (ClientException $e) {
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
+        }
+   		return true;
+   	}
+
 	/**
 	 * @param $id
 	 * @return bool
@@ -164,7 +212,6 @@ class Client
 		$request = $this->client->get($this->getBackend() . "?type=" . $type, $this->getHeaders());
 		return $this->sendRequest($request);
 	}
-
 
 	/**
 	 * @param string $id
@@ -353,6 +400,4 @@ class Client
 	{
 		return $this->runId;
 	}
-
-
 }

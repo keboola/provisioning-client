@@ -11,6 +11,7 @@
 		"keboola/storage-api-client": "~4.11.0"
  	},
 	"require": {
-        "guzzle/guzzle": "~3.7"
+			"guzzle/guzzle": "~3.7",
+			"keboola/syrup-php-client": "~4.1"
 	}
 }
