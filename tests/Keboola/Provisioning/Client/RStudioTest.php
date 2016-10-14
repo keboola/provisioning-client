@@ -9,7 +9,7 @@ require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
 
-class Keboola_ProvisioningClient_RSTudioTest extends \ProvisioningTestCase
+class Keboola_ProvisioningClient_RStudioTest extends \ProvisioningTestCase
 {
 
     public static function setUpBeforeClass()
