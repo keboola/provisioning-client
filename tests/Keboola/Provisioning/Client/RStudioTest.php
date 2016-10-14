@@ -43,6 +43,23 @@ class Keboola_ProvisioningClient_RSTudioTest extends \ProvisioningTestCase
 
         // test connection
         $this->assertTrue($this->connect($result));
+
+        // reuse credentials
+        $result2 = $this->client->getCredentialsAsync("rstudio");
+        $this->assertEquals($result, $result2);
+    }
+
+    /**
+     *
+     */
+    public function testDropRStudioCredentials()
+    {
+        $result = $this->client->getCredentialsAsync("rstudio");
+        $this->assertTrue($this->connect($result));
+
+        $this->client->dropCredentialsAsync($result["id"]);
+        // test connection
+        $this->assertFalse($this->connect($result));
     }
 
     public function connect($credentials)
@@ -53,10 +70,17 @@ class Keboola_ProvisioningClient_RSTudioTest extends \ProvisioningTestCase
             CURLOPT_TIMEOUT => 5
         ));
         $request = $client->get();
-        $request->send();
-        $body = $request->getResponse()->getBody(true);
-        if (strpos($body, "RStudio") > 0) {
-            return true;
+        try {
+            $request->send();
+            $body = $request->getResponse()->getBody(true);
+            if (strpos($body, "RStudio") > 0) {
+                return true;
+            }
+        } catch (\Guzzle\Http\Exception\CurlException $e) {
+            if (strpos($e->getMessage(), "Failed to connect") !== false) {
+                return false;
+            }
+            throw $e;
         }
         return false;
     }
