@@ -127,6 +127,9 @@ class Client
     {
         try {
             $created = $this->syrupClient->runAsyncAction("async/{$this->getBackend()}", "POST", ["body" => ["type" => $type]]);
+            if ($created["status"] == 'error') {
+                throw new Exception('Error getting credentials: ' . $created["result"]["message"]);
+            }
             $response = $this->getCredentialsByIdRequest($created["result"]["credentials"]["id"])["credentials"];
         } catch (ClientException $e) {
             throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
