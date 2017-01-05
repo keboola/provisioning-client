@@ -134,6 +134,28 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     /**
      *
      */
+    public function testCreateWriterCredentialsTimeout()
+    {
+        $result = $this->client->getCredentials("writer");
+        $conn = $this->connect($result);
+        $this->dbQuery($conn);
+
+        try {
+            odbc_exec($conn, "CALL SYSTEM\$WAIT(20);");
+            $this->fail("Query didn't time out.");
+        } catch(\PHPUnit_Framework_Error_Warning $e) {
+            $this->assertContains("timeout", $e->getMessage());
+            $this->assertContains("was canceled", $e->getMessage());
+        } finally {
+            odbc_close($conn);
+            $this->client->dropCredentials($result["id"]);
+        }
+    }
+
+
+    /**
+     *
+     */
     public function testGetCredentials()
     {
         $result = $this->client->getCredentials();
