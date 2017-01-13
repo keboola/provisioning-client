@@ -1,0 +1,299 @@
+FORMAT: 1A
+HOST: https://syrup.keboola.com/provisioning
+
+# Provisioning API
+
+Provisioning API provides resources for transformations and sandboxes.
+
+All API calls require `X-StorageApi-Token` header with a valid Storage API token.
+
+Provisioning API serves multiple backend credentials, depending on the configuration of your project.
+
+- **mysql** - MySQL/MariaDB database provided by Keboola, serving mainly for sandboxes and transformations
+- **redshift**  - (referred to as `redshift-workspace`) Creates a new Redshift workspace in your Redshift cluster for sandbox, transformations, Redshift database writer or Luckyguess
+- **snowflake**  - Creates a new Snowflake workspace in your project for sandbox, transformations, Snowflake database writer or Luckyguess
+- **wrdb** - MySQL database provided by Keboola for usage in MySQL writer
+- **docker** - A Docker container runnning on our infrastructure, giving you access to RStudio or Jupyter
+
+Each backend supports multiple types of usage. Allowed types for each backend are
+
+<table>
+    <tr>
+        <td><code>mysql</code></td>
+        <td><code>transformations</code>, <code>sandbox</code></td>
+    </tr>
+    <tr>
+        <td><code>snowflake</code></td>
+        <td><code>transformations</code>, <code>sandbox</code>, <code>writer</code>, <code>luckyguess</code></td>
+    </tr>
+    <tr>
+        <td><code>redshift-workspace</code></td>
+        <td><code>transformations</code>, <code>sandbox</code>, <code>writer</code>, <code>luckyguess</code></td>
+    </tr>
+    <tr>
+        <td><code>wrdb</code></td>
+        <td><code>write</code>, <code>read</code></td>
+    </tr>
+    <tr>
+        <td><code>docker</code></td>
+        <td><code>jupyter</code>, <code>rstudio</code></td>
+    </tr>
+</table>
+
+
+# Group Credentials Sync Actions
+
+Note, `docker` backend has to use async actions for creating or deleting credentials.
+
+## Create Credentials [/{backend}]
+
++ Parameters
+    + backend (string) - `mysql`, `snowflake`, `redshift-workspace` or `wrdb`
+
+### Create Credentials [POST]
+
+Creates credentials for the specified backend.
+
+Create new credentials for given token or return existing credentials, if they already exist for the given `type` option.
+
+#### Parameters
+
+    + type (optional, string) - allowed values `transformations`, `sandbox`, `writer`, `luckyguess`, `writer` or `read`, default `transformations`
+
++ Request (application/json)
+    + Headers
+
+            X-StorageApi-Token: 123456
+
+    + Body
+
+            {
+                "type": "sandbox"
+            }
+
++ Response 201 (application/json)
+
+        {
+            "credentials": {
+                "db": "tapi_70_sand",
+                "hostname": "tapi-b.keboola.com",
+                "id": "1386700227",
+                "password": "0hoo4e35acszjxw6",
+                "user": "tapi_70_sand"
+            },
+            "id": "1386700227",
+            "status": "ok",
+            "url": "mysql/1386700227"
+        }
+
+## List Credentials [/{backend}?type={type}]
+
++ Parameters
+    + backend (string) - `mysql`, `snowflake`, `redshift-workspace`, `wrdb` or `docker`
+
+
+### List Credentials [GET]
+Get available credentials for the given `type`. Useful when credentials id is not known.
+
+#### Response attributes
++ inUse - if the credentials currently have a process using them (there is a connection on the server)
+
++ Parameters
+    + type(optional, string) - allowed values `transformations`, `sandbox`, `writer`, `luckyguess`, `writer`, `read`, `rstudio` or `jupyter`, default `transformations`
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+
++ Response 200 (application/json)
+
+        {
+          "credentials": {
+            "db": "tapi_70_sand",
+            "hostname": "tapi-b.keboola.com",
+            "id": "1386700227",
+            "password": "0hoo4e35acszjxw6",
+            "user": "tapi_70_sand"
+          },
+          "inUse": false,
+          "status": "ok"
+        }
+
+
+## Credentials [/{backend}/{credentials_id}]
+
++ Parameters
+    + backend (string) - `mysql`, `snowflake`, `redshift-workspace`, `wrdb` or `docker`
+    + credentials_id(required, int) - ID of the credentials
+
+
+### Credentials Detail [GET]
+
+#### Response attributes
+
++ `inUse` - if the credentials currently have a process using them (there is a connection on the server)
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+
++ Response 200 (application/json)
+
+        {
+          "credentials": {
+            "db": "tapi_70_sand",
+            "hostname": "tapi-b.keboola.com",
+            "id": "1386700227",
+            "password": "0hoo4e35acszjxw6",
+            "user": "tapi_70_sand"
+          },
+          "inUse": false,
+          "status": "ok"
+        }
+
+### Drop Credentials Sync [DELETE]
+Delete credentials and their resources. Note that Docker backend only supports async actions.
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+
++ Response 200
+
+
+        { "status": "ok" }
+
+
+## Kill Processes [/{backend}/{credentials_id}/kill]
+
++ Parameters
+    + backend (string) - `mysql`, `snowflake`, `redshift-workspace` or `wrdb`
+    + credentials_id(required, int) - ID of the credentials
+
+### Kill Processes [POST]
+
+Terminate all running processes
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+            X-KBC-RunId: myRunId
+
++ Response 200
+
+
+        { "status": "ok" }
+
+
+# Group Credentials Async Actions
+
+## Create Credentials Async [/async/{backend}]
+
+Async actions are used for Docker applications, to create or delete Docker containers. No other backend than `docker` is supported in async actions.
+
++ Parameters
+    + backend (string) - only `docker` is allowed
+
+### Create Credentials Async [POST]
+
+Creates credentials for a sandbox running in Docker. The API call is asynchronous --
+it creates a job, and you need to poll the provided url until the job is finished. When the job is
+finished, the new credentials id will be contained in the `result.credentials.id` node.
+You need to call Provisioning API again to obtain details of the credentials.
+
+```
+{
+    "id": 206296229,
+    "runId": "206296230",
+    "component": "keboola-provisioning-bundle",
+    "command": "create",
+    "params": {
+        "backend": "docker",
+        "type": "rstudio",
+        "input": []
+    },
+    "result": {
+        "status": "ok",
+        "credentials": {
+            "port": 8330,
+            "id": 43,
+            "hostname": "ec2-54-165-252-226.compute-1.amazonaws.com",
+            "password": "nU3gS2bF3cE6aI5t",
+            "user": "rstu_572_30680"
+        },
+        "url": "docker/43"
+    },
+    "status": "success",
+    ...
+}
+```
+
+#### Attributes
++ type (required, string) - determines the type of the created credentials. Valid values are `rstudio` and `jupyter`.
+
++ Request (application/json)
+    + Headers
+
+            X-StorageApi-Token: 123456
+
+    + Body
+
+            {
+                "type": "rstudio"
+            }
+
+
++ Response 202 (application/json)
+
+        {
+            "id": 206197185,
+            "url": "http://syrup.keboola.com/queue/job/206197185",
+            "status": "waiting"
+        }
+
+
+## Drop Credentials Async [/async/docker/{credentials_id}]
+
++ Parameters
+    + credentials_id(required, int) - ID of the credentials
+
+### Drop Credentials Async [DELETE]
+Asynchronously delete credentials and their resources.
+You need to poll the provided url until the job is finished. When the job is
+finished, the result will be contained in the `result` node.
+
+```
+{
+    "id": 206298086,
+    "runId": "206298087",
+    "component": "keboola-provisioning-bundle",
+    "command": "delete",
+    "params": {
+        "backend": "docker",
+        "id": "43"
+    },
+    "result": {
+        "status": "ok"
+    },
+    "status": "success",
+    ...
+}
+```
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+
++ Response 200 (application/json)
+
+        {
+            "id": "206298086",
+            "url": "http://syrup-queue.kbc-devel-02.keboola.com/app_dev.php/queue/job/206298086",
+            "status": "waiting"
+        }
+
