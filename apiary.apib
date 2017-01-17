@@ -234,6 +234,8 @@ You need to call Provisioning API again to obtain details of the credentials.
 
 #### Attributes
 + type (required, string) - determines the type of the created credentials. Valid values are `rstudio` and `jupyter`.
++ script (optional, string) - code preloaded to the sandobx.
++ input (optional, array) - sandbox input mapping containing tables and files preloaded into the sandbox. Definition follows the [common schema](https://github.com/keboola/docker-bundle/blob/master/Resources/schemas/configuration.json#L30)
 
 + Request (application/json)
     + Headers
