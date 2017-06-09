@@ -51,7 +51,6 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 
         $result2 = $this->client->getCredentials();
         $this->assertEquals($result["credentials"], $result2["credentials"]);
-        var_dump($result);
 
         $this->client->dropCredentials($result["id"]);
     }
