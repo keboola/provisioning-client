@@ -40,16 +40,19 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 	{
 		$result = $this->client->getCredentials();
 		$this->assertArrayHasKey("id", $result);
-		$this->assertArrayHasKey("hostname", $result);
-		$this->assertArrayHasKey("db", $result);
-		$this->assertArrayHasKey("password", $result);
-		$this->assertArrayHasKey("user", $result);
-        $conn = $this->connect($result);
+		$this->assertArrayHasKey("touch", $result);
+		$this->assertArrayHasKey("id", $result["credentials"]);
+		$this->assertArrayHasKey("hostname", $result["credentials"]);
+		$this->assertArrayHasKey("db", $result["credentials"]);
+		$this->assertArrayHasKey("password", $result["credentials"]);
+		$this->assertArrayHasKey("user", $result["credentials"]);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
 
         $result2 = $this->client->getCredentials();
-        $this->assertEquals($result, $result2);
+        $this->assertEquals($result["credentials"], $result2["credentials"]);
+        var_dump($result);
 
         $this->client->dropCredentials($result["id"]);
 	}
@@ -60,17 +63,17 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 	public function testCreateSandboxCredentials()
 	{
 		$result = $this->client->getCredentials("sandbox");
-		$this->assertArrayHasKey("id", $result);
-		$this->assertArrayHasKey("hostname", $result);
-		$this->assertArrayHasKey("db", $result);
-		$this->assertArrayHasKey("password", $result);
-		$this->assertArrayHasKey("user", $result);
-        $conn = $this->connect($result);
+		$this->assertArrayHasKey("id", $result["credentials"]);
+		$this->assertArrayHasKey("hostname", $result["credentials"]);
+		$this->assertArrayHasKey("db", $result["credentials"]);
+		$this->assertArrayHasKey("password", $result["credentials"]);
+		$this->assertArrayHasKey("user", $result["credentials"]);
+        $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
 
         $result2 = $this->client->getCredentials("sandbox");
-        $this->assertEquals($result, $result2);
+        $this->assertEquals($result["credentials"], $result2["credentials"]);
         
         $this->client->dropCredentials($result["id"]);
 
@@ -84,12 +87,12 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 		$result = $this->client->getCredentials();
 		$id = $result["id"];
 		$result = $this->client->getCredentialsById($id);
-		$this->assertArrayHasKey("id", $result);
-		$this->assertArrayHasKey("hostname", $result);
-		$this->assertArrayHasKey("db", $result);
-		$this->assertArrayHasKey("password", $result);
-		$this->assertArrayHasKey("user", $result);
-        $conn = $this->connect($result);
+		$this->assertArrayHasKey("id", $result["credentials"]);
+		$this->assertArrayHasKey("hostname", $result["credentials"]);
+		$this->assertArrayHasKey("db", $result["credentials"]);
+		$this->assertArrayHasKey("password", $result["credentials"]);
+		$this->assertArrayHasKey("user", $result["credentials"]);
+        $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
         $this->client->dropCredentials($result["id"]);
@@ -104,11 +107,11 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $this->assertFalse($this->client->getExistingCredentials());
         $this->client->getCredentials();
         $result = $this->client->getExistingCredentials();
-        $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("hostname", $result);
-        $this->assertArrayHasKey("db", $result);
-        $this->assertArrayHasKey("password", $result);
-        $this->assertArrayHasKey("user", $result);
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
         $this->client->dropCredentials($result["id"]);
    	}
 
@@ -127,11 +130,10 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 	public function testKillProcesses()
 	{
 		$result = $this->client->getCredentials();
-        $conn = $this->connect($result);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
-        $id = $result["id"];
-		$result = $this->client->killProcesses($id);
-		$this->assertTrue($result);
+        $id = $result["credentials"]["id"];
+		$this->assertTrue($this->client->killProcesses($id));
         $this->assertFalse($this->dbQuery($conn));
         $conn->close();
         $this->client->dropCredentials($id);
@@ -153,19 +155,17 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 	public function testDropCredentials()
 	{
 		$result = $this->client->getCredentials();
-        $conn = $this->connect($result);
+        $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
 		$id = $result["id"];
-		$result = $this->client->dropCredentials($id);
-		$this->assertTrue($result);
+		$this->assertTrue($this->client->dropCredentials($id));
         $this->assertFalse($this->dbQuery($conn));
         $conn->close();
 
 		$result = $this->client->getCredentials("sandbox");
 		$id = $result["id"];
-        $conn = $this->connect($result);
-		$result = $this->client->dropCredentials($id);
-		$this->assertTrue($result);
+        $conn = $this->connect($result["credentials"]);
+		$this->assertTrue($this->client->dropCredentials($id));
         $this->assertFalse($this->dbQuery($conn));
         $conn->close();
 	}
@@ -175,9 +175,9 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
      */
     public function testSharedCredentials()
     {
-        $resultFirst = $this->client->getCredentials("sandbox");
+        $resultFirst = $this->client->getCredentials("sandbox")["credentials"];
         $clientSecond = new Client('mysql', PROVISIONING_API_TOKEN_SECOND_PROJECT, "ProvisioningApiTest", PROVISIONING_API_URL);
-        $resultSecond = $clientSecond->getCredentials("sandbox");
+        $resultSecond = $clientSecond->getCredentials("sandbox")["credentials"];
 
         $this->assertEquals($resultFirst["user"], $resultSecond["user"]);
         $this->assertEquals($resultFirst["hostname"], $resultSecond["hostname"]);
