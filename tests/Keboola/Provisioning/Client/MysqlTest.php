@@ -45,13 +45,14 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("db", $result["credentials"]);
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("touch", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
 
         $result2 = $this->client->getCredentials();
         $this->assertEquals($result["credentials"], $result2["credentials"]);
-
+        $this->assertEquals($result["id"], $result2["id"]);
         $this->client->dropCredentials($result["id"]);
     }
 
@@ -66,13 +67,15 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("db", $result["credentials"]);
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("touch", $result);
+        $this->assertArrayHasKey("id", $result);
         $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
 
         $result2 = $this->client->getCredentials("sandbox");
         $this->assertEquals($result["credentials"], $result2["credentials"]);
-
+        $this->assertEquals($result["id"], $result2["id"]);
         $this->client->dropCredentials($result["id"]);
     }
 
@@ -89,6 +92,8 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("db", $result["credentials"]);
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("touch", $result);
+        $this->assertArrayHasKey("id", $result);
         $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
         $conn->close();
@@ -108,6 +113,8 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("db", $result["credentials"]);
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("touch", $result);
+        $this->assertArrayHasKey("id", $result);
         $this->client->dropCredentials($result["id"]);
     }
 
