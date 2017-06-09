@@ -41,19 +41,22 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     public function testCreateTransformationCredentials()
     {
         $result = $this->client->getCredentials();
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("schema", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("hostname", $result);
-        $this->assertArrayHasKey("db", $result);
-        $this->assertArrayHasKey("password", $result);
-        $this->assertArrayHasKey("user", $result);
-        $this->assertArrayHasKey("schema", $result);
-        $this->assertArrayHasKey("warehouse", $result);
-        $conn = $this->connect($result);
+        $this->assertArrayHasKey("workspaceId", $result);
+        $this->assertArrayHasKey("touch", $result);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         odbc_close($conn);
 
         $result2 = $this->client->getCredentials();
-        $this->assertEquals($result, $result2);
+        $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["id"], $result2["id"]);
 
         $this->client->dropCredentials($result["id"]);
 
@@ -65,19 +68,22 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     public function testCreateSandboxCredentials()
     {
         $result = $this->client->getCredentials("sandbox");
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("schema", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("hostname", $result);
-        $this->assertArrayHasKey("db", $result);
-        $this->assertArrayHasKey("password", $result);
-        $this->assertArrayHasKey("user", $result);
-        $this->assertArrayHasKey("schema", $result);
-        $this->assertArrayHasKey("warehouse", $result);
-        $conn = $this->connect($result);
+        $this->assertArrayHasKey("workspaceId", $result);
+        $this->assertArrayHasKey("touch", $result);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         odbc_close($conn);
 
         $result2 = $this->client->getCredentials("sandbox");
-        $this->assertEquals($result, $result2);
+        $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["id"], $result2["id"]);
 
         $this->client->dropCredentials($result["id"]);
 
@@ -89,22 +95,24 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     public function testCreateLuckyguessCredentials()
     {
         $result = $this->client->getCredentials("luckyguess");
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("schema", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("hostname", $result);
-        $this->assertArrayHasKey("db", $result);
-        $this->assertArrayHasKey("password", $result);
-        $this->assertArrayHasKey("user", $result);
-        $this->assertArrayHasKey("schema", $result);
-        $this->assertArrayHasKey("warehouse", $result);
-        $conn = $this->connect($result);
+        $this->assertArrayHasKey("workspaceId", $result);
+        $this->assertArrayHasKey("touch", $result);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         odbc_close($conn);
 
         $result2 = $this->client->getCredentials("luckyguess");
-        $this->assertEquals($result, $result2);
+        $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["id"], $result2["id"]);
 
         $this->client->dropCredentials($result["id"]);
-
     }
 
 
@@ -114,19 +122,22 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     public function testCreateWriterCredentials()
     {
         $result = $this->client->getCredentials("writer");
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("schema", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("hostname", $result);
-        $this->assertArrayHasKey("db", $result);
-        $this->assertArrayHasKey("password", $result);
-        $this->assertArrayHasKey("user", $result);
-        $this->assertArrayHasKey("schema", $result);
-        $this->assertArrayHasKey("warehouse", $result);
-        $conn = $this->connect($result);
+        $this->assertArrayHasKey("workspaceId", $result);
+        $this->assertArrayHasKey("touch", $result);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         odbc_close($conn);
 
         $result2 = $this->client->getCredentials("writer");
-        $this->assertEquals($result, $result2);
+        $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["id"], $result2["id"]);
 
         $this->client->dropCredentials($result["id"]);
     }
@@ -137,7 +148,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     public function testCreateWriterCredentialsTimeout()
     {
         $result = $this->client->getCredentials("writer");
-        $conn = $this->connect($result);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
 
         try {
@@ -161,14 +172,16 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $result = $this->client->getCredentials();
         $id = $result["id"];
         $result = $this->client->getCredentialsById($id);
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("schema", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("hostname", $result);
-        $this->assertArrayHasKey("db", $result);
-        $this->assertArrayHasKey("password", $result);
-        $this->assertArrayHasKey("user", $result);
-        $this->assertArrayHasKey("schema", $result);
-        $this->assertArrayHasKey("warehouse", $result);
-        $conn = $this->connect($result);
+        $this->assertArrayHasKey("workspaceId", $result);
+        $this->assertArrayHasKey("touch", $result);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         odbc_close($conn);
         $this->client->dropCredentials($id);
@@ -182,13 +195,16 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertFalse($this->client->getExistingCredentials());
         $this->client->getCredentials();
         $result = $this->client->getExistingCredentials();
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("db", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("warehouse", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("hostname", $result);
-        $this->assertArrayHasKey("db", $result);
-        $this->assertArrayHasKey("password", $result);
-        $this->assertArrayHasKey("user", $result);
-        $this->assertArrayHasKey("schema", $result);
-        $this->assertArrayHasKey("warehouse", $result);
+        $this->assertArrayHasKey("workspaceId", $result);
+        $this->assertArrayHasKey("touch", $result);
         $this->client->dropCredentials($result["id"]);
     }
 
@@ -210,11 +226,10 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
           'Killing Snowflake transactions not yet supported'
         );
         $result = $this->client->getCredentials();
-        $conn = $this->connect($result);
+        $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $id = $result["id"];
-        $result = $this->client->killProcesses($id);
-        $this->assertTrue($result);
+        $this->assertTrue($this->client->killProcesses($id));
         $this->assertFalse($this->dbQuery($conn));
         odbc_close($conn);
         $this->client->dropCredentials($id);
@@ -236,27 +251,24 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     public function testDropCredentials()
     {
         $result = $this->client->getCredentials();
-        $conn = $this->connect($result);
+        $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
         $id = $result["id"];
-        $result = $this->client->dropCredentials($id);
-        $this->assertTrue($result);
+        $this->assertTrue($this->client->dropCredentials($id));
         $this->assertFalse($this->dbQuery($conn));
         odbc_close($conn);
 
         $result = $this->client->getCredentials("sandbox");
         $id = $result["id"];
-        $conn = $this->connect($result);
-        $result = $this->client->dropCredentials($id);
-        $this->assertTrue($result);
+        $conn = $this->connect($result["credentials"]);
+        $this->assertTrue($this->client->dropCredentials($id));
         $this->assertFalse($this->dbQuery($conn));
         odbc_close($conn);
 
         $result = $this->client->getCredentials("luckyguess");
         $id = $result["id"];
-        $conn = $this->connect($result);
-        $result = $this->client->dropCredentials($id);
-        $this->assertTrue($result);
+        $conn = $this->connect($result["credentials"]);
+        $this->assertTrue($this->client->dropCredentials($id));
         $this->assertFalse($this->dbQuery($conn));
         odbc_close($conn);
     }
