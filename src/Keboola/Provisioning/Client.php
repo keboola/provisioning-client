@@ -113,7 +113,7 @@ class Client
     public function getCredentials($type = "transformations")
     {
         $created = $this->createCredentialsRequest($type);
-        $response = $this->getCredentialsByIdRequest($created["credentials"]["id"])["credentials"];
+        $response = $this->getCredentialsByIdRequest($created["credentials"]["id"]);
 
         return $response;
     }
@@ -130,7 +130,7 @@ class Client
             if ($created["status"] == 'error') {
                 throw new Exception('Error getting credentials: ' . $created["result"]["message"]);
             }
-            $response = $this->getCredentialsByIdRequest($created["result"]["credentials"]["id"])["credentials"];
+            $response = $this->getCredentialsByIdRequest($created["result"]["credentials"]["id"]);
         } catch (ClientException $e) {
             throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
         }
@@ -147,7 +147,7 @@ class Client
    	{
         try {
             $created = $this->getCredentialsRequest($type);
-            $response = $this->getCredentialsByIdRequest($created["credentials"]["id"])["credentials"];
+            $response = $this->getCredentialsByIdRequest($created["credentials"]["id"]);
         } catch (CredentialsNotFoundException $e) {
             return false;
         }
@@ -159,7 +159,7 @@ class Client
 	 * @return mixed
 	 */
 	public function getCredentialsById($id) {
-		$response = $this->getCredentialsByIdRequest($id)["credentials"];
+		$response = $this->getCredentialsByIdRequest($id);
 		return $response;
 	}
 
