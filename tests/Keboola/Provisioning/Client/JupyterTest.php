@@ -35,18 +35,21 @@ class Keboola_ProvisioningClient_JupyterTest extends \ProvisioningTestCase
     public function testCreateJupyterCredentials()
     {
         $result = $this->client->getCredentialsAsync("jupyter");
+        $this->assertArrayHasKey("id", $result["credentials"]);
+        $this->assertArrayHasKey("hostname", $result["credentials"]);
+        $this->assertArrayHasKey("password", $result["credentials"]);
+        $this->assertArrayHasKey("user", $result["credentials"]);
+        $this->assertArrayHasKey("port", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("hostname", $result);
-        $this->assertArrayHasKey("password", $result);
-        $this->assertArrayHasKey("user", $result);
-        $this->assertArrayHasKey("port", $result);
+        $this->assertArrayHasKey("touch", $result);
 
         // test connection
-        $this->assertTrue($this->connect($result));
+        $this->assertTrue($this->connect($result["credentials"]));
 
         // reuse credentials
         $result2 = $this->client->getCredentialsAsync("jupyter");
-        $this->assertEquals($result, $result2);
+        $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["id"], $result2["id"]);
     }
 
     /**
@@ -55,11 +58,11 @@ class Keboola_ProvisioningClient_JupyterTest extends \ProvisioningTestCase
     public function testDropJupyterCredentials()
     {
         $result = $this->client->getCredentialsAsync("jupyter");
-        $this->assertTrue($this->connect($result));
+        $this->assertTrue($this->connect($result["credentials"]));
 
         $this->client->dropCredentialsAsync($result["id"]);
         // test connection
-        $this->assertFalse($this->connect($result));
+        $this->assertFalse($this->connect($result["credentials"]));
     }
 
     public function connect($credentials)
