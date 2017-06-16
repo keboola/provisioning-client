@@ -112,9 +112,15 @@ class Client
      */
     public function getCredentials($type = "transformations")
     {
-        $created = $this->createCredentialsRequest($type);
-        $response = $this->getCredentialsByIdRequest($created["credentials"]["id"]);
-
+        try {
+            $response = $this->getCredentialsRequest($type);
+            // force recreate to reload credentials
+            if ($type == "read" && $this->getBackend() == "redshift") {
+                $response = $this->createCredentialsRequest($type);
+            }
+        } catch (CredentialsNotFoundException $e) {
+            $response = $this->createCredentialsRequest($type);
+        }
         return $response;
     }
 
@@ -146,8 +152,7 @@ class Client
    	public function getExistingCredentials($type = "transformations")
    	{
         try {
-            $created = $this->getCredentialsRequest($type);
-            $response = $this->getCredentialsByIdRequest($created["credentials"]["id"]);
+            $response = $this->getCredentialsRequest($type);
         } catch (CredentialsNotFoundException $e) {
             return false;
         }
@@ -194,6 +199,16 @@ class Client
 		$this->killProcessesRequest($id);
 		return true;
 	}
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function extendCredentials($id)
+    {
+        $response = $this->extendCredentialsRequest($id);
+        return $response;
+    }
 
     /**
 	 * @param string $type
@@ -246,6 +261,16 @@ class Client
 		return $this->sendRequest($request);
 	}
 
+    /**
+   	 * @param string $id
+   	 * @return mixed
+   	 */
+   	private function extendCredentialsRequest($id)
+   	{
+   		$request = $this->client->post($this->getBackend() . "/" . $id . "/extend", $this->getHeaders());
+   		return $this->sendRequest($request);
+   	}
+
 	/**
 	 * @param $request RequestInterface
 	 * @return mixed
@@ -261,8 +286,6 @@ class Client
             } else {
                 throw new Exception('Error from Provisioning API: ' . $data["message"], null, $e);
             }
-
-
 		} catch (BadResponseException $e) {
 			throw new Exception('Error receiving response from Provisioning API', null, $e);
 		}

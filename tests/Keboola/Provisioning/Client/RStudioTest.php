@@ -50,6 +50,7 @@ class Keboola_ProvisioningClient_RStudioTest extends \ProvisioningTestCase
         $result2 = $this->client->getCredentialsAsync("rstudio");
         $this->assertEquals($result["credentials"], $result2["credentials"]);
         $this->assertEquals($result["id"], $result2["id"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
     }
 
     /**
@@ -63,6 +64,20 @@ class Keboola_ProvisioningClient_RStudioTest extends \ProvisioningTestCase
         $this->client->dropCredentialsAsync($result["id"]);
         // test connection
         $this->assertFalse($this->connect($result["credentials"]));
+    }
+
+    /**
+     *
+     */
+    public function testExtendCredentials()
+    {
+        $result = $this->client->getCredentialsAsync("rstudio");
+        $result2 = $this->client->extendCredentials($result["id"]);
+        $this->assertArrayHasKey("id", $result2);
+        $this->assertArrayHasKey("touch", $result2);
+        $this->assertArrayNotHasKey("credentials", $result2);
+        $this->assertGreaterThan($result["touch"], $result2["touch"]);
+        $this->client->dropCredentialsAsync($result["id"]);
     }
 
     public function connect($credentials)

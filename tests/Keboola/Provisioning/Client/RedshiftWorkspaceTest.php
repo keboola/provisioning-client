@@ -59,6 +59,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $result2 = $this->client->getCredentials();
         $this->assertEquals($result["id"], $result2["id"]);
         $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
         $this->client->dropCredentials($result["id"]);
     }
 
@@ -84,6 +85,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $result2 = $this->client->getCredentials("sandbox");
         $this->assertEquals($result["id"], $result2["id"]);
         $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
 
         $this->client->dropCredentials($result["id"]);
 
@@ -111,6 +113,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $result2 = $this->client->getCredentials("luckyguess");
         $this->assertEquals($result["id"], $result2["id"]);
         $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
 
         $this->client->dropCredentials($result["id"]);
     }
@@ -137,6 +140,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $result2 = $this->client->getCredentials("writer");
         $this->assertEquals($result["id"], $result2["id"]);
         $this->assertEquals($result["credentials"], $result2["credentials"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
 
         $this->client->dropCredentials($result["id"]);
     }
@@ -284,6 +288,19 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertNotEquals($result["workspaceId"], $workspaceId);
     }
 
+    /**
+     *
+     */
+    public function testExtendCredentials()
+    {
+        $result = $this->client->getCredentials();
+        try {
+            $this->client->extendCredentials($result["id"]);
+        } catch (\Keboola\Provisioning\Exception $e) {
+            $this->assertContains('Cannot extend workspace credentials', $e->getMessage());
+        }
+        $this->client->dropCredentials($result["id"]);
+    }
 
     /**
      * @param $credentials

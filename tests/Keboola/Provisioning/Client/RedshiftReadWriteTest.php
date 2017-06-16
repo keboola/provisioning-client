@@ -31,6 +31,11 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $this->client = new Client("redshift", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
     }
 
+    public function tearDown()
+    {
+
+    }
+
     /**
      *
      */
@@ -52,6 +57,7 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $result2 = $this->client->getCredentials("write");
         $this->assertEquals($result["credentials"], $result2["credentials"]);
         $this->assertEquals($result["id"], $result2["id"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
 
         $this->client->dropCredentials($result["id"]);
     }
@@ -97,6 +103,7 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $result2 = $this->client->getCredentials("read");
         $this->assertEquals($result["credentials"], $result2["credentials"]);
         $this->assertEquals($result["id"], $result2["id"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
 
         $this->client->dropCredentials($result["id"]);
 
@@ -141,6 +148,7 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
         $result2 = $this->client->getCredentials("read");
         $this->assertEquals($result["credentials"], $result2["credentials"]);
         $this->assertEquals($result["id"], $result2["id"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
 
         $this->client->dropCredentials($result["id"]);
 
@@ -327,12 +335,11 @@ class Keboola_ProvisioningClient_RedshiftReadWriteTest extends \ProvisioningTest
      * @expectedException  \Doctrine\DBAL\DBALException
      * @expectedExceptionMessageRegExp  /SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info/
      */
-    public function testMetaQueryWrhite() {
+    public function testMetaQueryWrite() {
         $result = $this->client->getCredentials("write");
         $conn = $this->connect($result["credentials"]);
         $conn->query("SELECT * FROM SVV_TABLE_INFO;");
     }
-
 
     /**
      * @param $credentials

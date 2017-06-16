@@ -53,6 +53,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $result2 = $this->client->getCredentials();
         $this->assertEquals($result["credentials"], $result2["credentials"]);
         $this->assertEquals($result["id"], $result2["id"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
         $this->client->dropCredentials($result["id"]);
     }
 
@@ -76,6 +77,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $result2 = $this->client->getCredentials("sandbox");
         $this->assertEquals($result["credentials"], $result2["credentials"]);
         $this->assertEquals($result["id"], $result2["id"]);
+        $this->assertEquals($result["touch"], $result2["touch"]);
         $this->client->dropCredentials($result["id"]);
     }
 
@@ -214,6 +216,20 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
         $conn->close();
 
         $clientSecond->dropCredentials($resultSecond["id"]);
+    }
+
+    /**
+     *
+     */
+    public function testExtendCredentials()
+    {
+        $result = $this->client->getCredentials();
+        $result2 = $this->client->extendCredentials($result["id"]);
+        $this->assertArrayHasKey("id", $result2);
+        $this->assertArrayHasKey("touch", $result2);
+        $this->assertArrayNotHasKey("credentials", $result2);
+        $this->assertGreaterThan($result["touch"], $result2["touch"]);
+        $this->client->dropCredentials($result["id"]);
     }
 
     /**
