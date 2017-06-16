@@ -105,16 +105,17 @@ Get available credentials for the given `type`. Useful when credentials id is no
 + Response 200 (application/json)
 
         {
-          "credentials": {
-            "db": "tapi_70_sand",
-            "hostname": "tapi-b.keboola.com",
             "id": "1386700227",
-            "password": "0hoo4e35acszjxw6",
-            "user": "tapi_70_sand"
-          },
-          "inUse": false,
-          "touch": "123456"
-          "status": "ok"
+            "credentials": {
+                "db": "tapi_70_sand",
+                "hostname": "tapi-b.keboola.com",
+                "id": "1386700227",
+                "password": "0hoo4e35acszjxw6",
+                "user": "tapi_70_sand"
+            },
+            "inUse": false,
+            "touch": "123456"
+            "status": "ok"
         }
 
 
@@ -139,16 +140,17 @@ Get available credentials for the given `type`. Useful when credentials id is no
 + Response 200 (application/json)
 
         {
-          "credentials": {
-            "db": "tapi_70_sand",
-            "hostname": "tapi-b.keboola.com",
             "id": "1386700227",
-            "password": "0hoo4e35acszjxw6",
-            "user": "tapi_70_sand"
-          },
-          "inUse": false,
-          "touch": "123456"
-          "status": "ok"
+            "credentials": {
+                "db": "tapi_70_sand",
+                "hostname": "tapi-b.keboola.com",
+                "id": "1386700227",
+                "password": "0hoo4e35acszjxw6",
+                "user": "tapi_70_sand"
+            },
+            "inUse": false,
+            "touch": "123456"
+            "status": "ok"
         }
 
 ### Drop Credentials Sync [DELETE]
@@ -185,6 +187,30 @@ Terminate all running processes
 
 
         { "status": "ok" }
+
+## Extend Credentials [/{backend}/{credentials_id}/extend]
+
++ Parameters
+    + backend (string) - `mysql`, `snowflake`, `docker` or `redshift-workspace`
+    + credentials_id(required, int) - ID of the credentials
+
+### Extend Credentials [POST]
+
+Marks credentials as being used and resets the validity period.
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+            X-KBC-RunId: myRunId
+
++ Response 200
+
+
+        {
+            "touch": "123456",
+            "id": "1386700227"
+        }
 
 
 # Group Credentials Async Actions
