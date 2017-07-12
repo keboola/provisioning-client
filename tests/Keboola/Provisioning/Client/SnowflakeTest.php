@@ -159,8 +159,12 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
             odbc_exec($conn, "CALL SYSTEM\$WAIT(70);");
             $this->fail("Query didn't time out.");
         } catch(\PHPUnit_Framework_Error_Warning $e) {
-            $this->assertContains("timeout", $e->getMessage());
-            $this->assertContains("was canceled", $e->getMessage());
+            if (strpos($e->getMessage(), 'SFExecuteQueryTimeout') !== false) {
+                $this->assertContains("SFExecuteQueryTimeout", $e->getMessage());
+            } else {
+                $this->assertContains("timeout", $e->getMessage());
+                $this->assertContains("was canceled", $e->getMessage());
+            }
         } finally {
             odbc_close($conn);
             $this->client->dropCredentials($result["id"]);
