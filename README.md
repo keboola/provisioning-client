@@ -90,6 +90,7 @@ Read more in [Composer documentation](http://getcomposer.org/doc/01-basic-usage.
 PROVISIONING_API_URL=
 PROVISIONING_API_TOKEN=
 PROVISIONING_API_TOKEN_SECOND_PROJECT=
+SYRUP_QUEUE_URL=
 ```
 - Download Snowflake ODBC Driver from S3
 ```
