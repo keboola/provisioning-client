@@ -224,6 +224,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
     public function testExtendCredentials()
     {
         $result = $this->client->getCredentials();
+        sleep(2);
         $result2 = $this->client->extendCredentials($result["id"]);
         $this->assertArrayHasKey("id", $result2);
         $this->assertArrayHasKey("touch", $result2);
