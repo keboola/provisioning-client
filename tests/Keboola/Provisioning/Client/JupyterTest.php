@@ -82,7 +82,7 @@ class Keboola_ProvisioningClient_JupyterTest extends \ProvisioningTestCase
 
     public function connect($credentials)
     {
-        $client = new \Guzzle\Http\Client("http://" . $credentials["hostname"] . ":" . $credentials["port"]);
+        $client = new \Guzzle\Http\Client("https://" . $credentials["hostname"] . ":" . $credentials["port"]);
         $client->getConfig()->set('curl.options', array(
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
             CURLOPT_TIMEOUT => 5
