@@ -98,7 +98,7 @@ class Keboola_ProvisioningClient_RStudioTest extends \ProvisioningTestCase
             if (strpos($e->getMessage(), "Failed to connect") !== false) {
                 return false;
             }
-            if (strpos($e->getMessage(), "Connection timed out") !== false) {
+            if (strpos($e->getMessage(), "Operation timed out") !== false) {
                 return false;
             }
             throw $e;
