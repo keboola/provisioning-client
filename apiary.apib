@@ -222,9 +222,9 @@ Async actions are used for Docker applications, to create or delete Docker conta
 + Parameters
     + backend (string) - only `docker` is allowed
 
-### Create Credentials Async [POST]
+### Create Plain Sandbox Credentials Async [POST]
 
-Creates credentials for a sandbox running in Docker. The API call is asynchronous --
+Creates credentials for a Plain Sandbox running in Docker. The API call is asynchronous --
 it creates a job, and you need to poll the provided url until the job is finished. When the job is
 finished, the new credentials id will be contained in the `result.credentials.id` node.
 You need to call Provisioning API again to obtain details of the credentials.
@@ -281,6 +281,76 @@ You need to call Provisioning API again to obtain details of the credentials.
             "status": "waiting"
         }
 
+## Create Credentials Async [/async/{backend}]
+
+Async actions are used for Docker applications, to create or delete Docker containers. No other backend than `docker` is supported in async actions.
+
++ Parameters
+    + backend (string) - only `docker` is allowed
+
+### Create Transformation Sandbox Credentials Async [POST]
+
+Creates credentials for a Transformation Sandbox running in Docker. The API call is asynchronous --
+it creates a job, and you need to poll the provided url until the job is finished. When the job is
+finished, the new credentials id will be contained in the `result.credentials.id` node.
+You need to call Provisioning API again to obtain details of the credentials.
+
+```
+{
+    "id": 206296229,
+    "runId": "206296230",
+    "component": "keboola-provisioning-bundle",
+    "command": "create",
+    "params": {
+        "backend": "docker",
+        "type": "rstudio",
+        "input": []
+    },
+    "result": {
+        "status": "ok",
+        "credentials": {
+            "port": 8330,
+            "id": 43,
+            "hostname": "ec2-54-165-252-226.compute-1.amazonaws.com",
+            "password": "nU3gS2bF3cE6aI5t",
+            "user": "rstu_572_30680"
+        },
+        "url": "docker/43"
+    },
+    "status": "success",
+    ...
+}
+```
+
+#### Attributes
++ transformation (required, object)
+    + config_id (required, string) - Id of transformation configuration.
+    + config_version (required, string) - Version of the transformation configuration.
+    + row_id (required, string) - Id of the transformation configuration row.
+
++ Request (application/json)
+    + Headers
+
+            X-StorageApi-Token: 123456
+
+    + Body
+
+            {
+                "transformation": {
+                    "config_id": "12345",
+                    "config_version": "4",
+                    "row_id": "6789"
+                }
+            }
+
+
++ Response 202 (application/json)
+
+        {
+            "id": 206197185,
+            "url": "http://syrup.keboola.com/queue/job/206197185",
+            "status": "waiting"
+        }
 
 ## Drop Credentials Async [/async/docker/{credentials_id}]
 
