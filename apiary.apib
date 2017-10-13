@@ -215,14 +215,14 @@ Marks credentials as being used and resets the validity period.
 
 # Group Credentials Async Actions
 
-## Create Credentials Async [/async/{backend}]
+## Plain Sandbox Credentials Async [/async/{backend}]
 
 Async actions are used for Docker applications, to create or delete Docker containers. No other backend than `docker` is supported in async actions.
 
 + Parameters
     + backend (string) - only `docker` is allowed
 
-### Create Plain Sandbox Credentials Async [POST]
+### Create Credentials [POST]
 
 Creates credentials for a Plain Sandbox running in Docker. The API call is asynchronous --
 it creates a job, and you need to poll the provided url until the job is finished. When the job is
@@ -281,14 +281,14 @@ You need to call Provisioning API again to obtain details of the credentials.
             "status": "waiting"
         }
 
-## Create Credentials Async [/async/{backend}]
+## Transformation Sandbox Credentials Async [/async/{backend}/transformation]
 
 Async actions are used for Docker applications, to create or delete Docker containers. No other backend than `docker` is supported in async actions.
 
 + Parameters
     + backend (string) - only `docker` is allowed
 
-### Create Transformation Sandbox Credentials Async [POST]
+### Create Credentials [POST]
 
 Creates credentials for a Transformation Sandbox running in Docker. The API call is asynchronous --
 it creates a job, and you need to poll the provided url until the job is finished. When the job is
