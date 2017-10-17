@@ -4,8 +4,8 @@ ini_set('display_errors', true);
 define('ROOT_PATH', __DIR__);
 require_once ROOT_PATH . '/vendor/autoload.php';
 
-if (file_exists('config.php')) {
-	require_once 'config.php';
+if (file_exists(ROOT_PATH . '/config.php')) {
+	require_once ROOT_PATH . '/config.php';
 }
 
 defined('PROVISIONING_API_URL')

@@ -154,7 +154,7 @@ class Client
     {
         try {
             $created = $this->syrupClient->runAsyncAction(
-                "async/{$this->getBackend()}",
+                "async/{$this->getBackend()}/transformation",
                 "POST",
                 ["body" => [
                     "transformation" => [
