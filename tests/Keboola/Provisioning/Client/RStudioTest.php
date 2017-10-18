@@ -8,6 +8,8 @@
 require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
+use Keboola\StorageApi\Options\Components\Configuration;
+use Keboola\StorageApi\Options\Components\ConfigurationRow;
 
 class Keboola_ProvisioningClient_RStudioTest extends \ProvisioningTestCase
 {
@@ -78,6 +80,46 @@ class Keboola_ProvisioningClient_RStudioTest extends \ProvisioningTestCase
         $this->assertArrayNotHasKey("credentials", $result2);
         $this->assertGreaterThan($result["touch"], $result2["touch"]);
         $this->client->dropCredentialsAsync($result["id"]);
+    }
+
+    public function testCreateRTransformationCredentials()
+    {
+        $client = new \Keboola\StorageApi\Client(['token' => PROVISIONING_API_TOKEN]);
+        $components = new \Keboola\StorageApi\Components($client);
+        $config = new Configuration();
+        $config->setName('test-config');
+        $config->setComponentId('transformation');
+        $configData = $components->addConfiguration($config);
+        $config->setConfigurationId($configData['id']);
+        $row = new ConfigurationRow($config);
+        $row->setConfiguration([
+            "backend" => "docker",
+            "description" => "Test configuration",
+            "type" => "r",
+            "packages" => [],
+            "tags" => [],
+            "queries" => [
+                "this is some script\ncode on multiple lines"
+            ]
+        ]);
+        $rowData = $components->addConfigurationRow($row);
+
+        $result = $this->client->getTransformationSandboxCredentialsAsync(
+            $configData['id'],
+            $configData['version'] + 1,
+            $rowData['id']
+        );
+        $components->deleteConfiguration('transformation', $configData['id']);
+        self::assertArrayHasKey("id", $result["credentials"]);
+        self::assertArrayHasKey("hostname", $result["credentials"]);
+        self::assertArrayHasKey("password", $result["credentials"]);
+        self::assertArrayHasKey("user", $result["credentials"]);
+        self::assertArrayHasKey("port", $result["credentials"]);
+        self::assertArrayHasKey("id", $result);
+        self::assertArrayHasKey("touch", $result);
+
+        // test connection
+        self::assertTrue($this->connect($result["credentials"]));
     }
 
     public function connect($credentials)

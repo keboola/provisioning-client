@@ -144,6 +144,37 @@ class Client
     }
 
     /**
+     * @param string $configId
+     * @param string $configVersion
+     * @param string $rowId
+     * @return array
+     * @throws Exception
+     */
+    public function getTransformationSandboxCredentialsAsync($configId, $configVersion, $rowId)
+    {
+        try {
+            $created = $this->syrupClient->runAsyncAction(
+                "async/{$this->getBackend()}/transformation",
+                "POST",
+                ["body" => [
+                    "transformation" => [
+                        'config_id' => $configId,
+                        'config_version' => $configVersion,
+                        'row_id' => $rowId,
+                    ]
+                ]]
+            );
+            if ($created["status"] == 'error') {
+                throw new Exception('Error getting credentials: ' . $created["result"]["message"]);
+            }
+            $response = $this->getCredentialsByIdRequest($created["result"]["credentials"]["id"]);
+        } catch (ClientException $e) {
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
+        }
+        return $response;
+    }
+
+    /**
      * @param string $type
      * @return bool|mixed
      * @throws CredentialsNotFoundException
