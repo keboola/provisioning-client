@@ -94,7 +94,7 @@ SYRUP_QUEUE_URL=
 ```
 - Download Snowflake ODBC Driver from S3
 ```
-docker-compose run --rm -e AWS_ACCESS_KEY=$AWS_ACCESS_KEY -e AWS_SECRET_KEY=$AWS_SECRET_KEY php php docker/downloadOdbcDriver.php
+docker-compose run --rm -e AWS_ACCESS_KEY=$AWS_ACCESS_KEY -e AWS_SECRET_KEY=$AWS_SECRET_KEY --volume $(pwd):/code keboola/docker-php56-all-db php docker/downloadOdbcDriver.php
 ```
 - Or download snowflake driver from Snowflake support and store it as `./snowflake_linux_x8664_odbc.tgz` 
 
@@ -107,7 +107,7 @@ docker-compose build
 Run tests with following command.
 
 ```
-docker-compose run --rm tests
+docker-compose run --rm php /code/vendor/bin/phpunit
 ```
 
 Please note, for running Docker (RStudio / Jupyter) tests, you need to have async job queue processing running or 

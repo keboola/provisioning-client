@@ -2,12 +2,11 @@ version: "2"
 
 services:
 
-  tests:
+  php:
     build: .
     volumes:
       - .:/code
     working_dir: /code
-    command: sh -c 'composer install -n && php ./vendor/bin/phpunit'
     tty: true
     stdin_open: true
     environment:
@@ -15,8 +14,3 @@ services:
       - SYRUP_QUEUE_URL
       - PROVISIONING_API_TOKEN
       - PROVISIONING_API_TOKEN_SECOND_PROJECT
-  php:
-    image: keboola/docker-php56-all-db
-    volumes:
-        - .:/code
-    working_dir: /code
