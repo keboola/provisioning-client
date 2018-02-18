@@ -163,7 +163,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
                 $this->assertContains("SFExecuteQueryTimeout", $e->getMessage());
             } else {
                 $this->assertContains("timeout", $e->getMessage());
-                $this->assertContains("was canceled", $e->getMessage());
             }
         } finally {
             odbc_close($conn);
