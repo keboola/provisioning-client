@@ -21,8 +21,8 @@ RUN set -x \
 
 ## install snowflake drivers
 ADD ./snowflake_linux_x8664_odbc.tgz /usr/bin
-ADD ./docker/snowflake/simba.snowflake.ini /etc/simba.snowflake.ini
-ADD ./docker/snowflake/odbcinst.ini /etc/odbcinst.ini
+COPY ./docker/snowflake/simba.snowflake.ini /etc/simba.snowflake.ini
+COPY ./docker/snowflake/odbcinst.ini /etc/odbcinst.ini
 RUN mkdir -p  /usr/bin/snowflake_odbc/log
 
 ENV SIMBAINI /etc/simba.snowflake.ini
@@ -34,7 +34,7 @@ RUN cd \
   && curl -sS https://getcomposer.org/installer | php \
   && ln -s /root/composer.phar /usr/local/bin/composer
 
-ADD ./ /code
+COPY ./ /code
 
 WORKDIR /code
 RUN composer install --prefer-dist --no-interaction
