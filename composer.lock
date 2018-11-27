@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7066167d9b21f0aa1484ba5534cdddef",
+    "content-hash": "0a5e4ba6c2cd1262accfbd1210b539bc",
     "packages": [
         {
             "name": "guzzle/guzzle",
@@ -285,25 +285,25 @@
         },
         {
             "name": "keboola/syrup-php-client",
-            "version": "dev-odin-run-tag",
+            "version": "5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/syrup-php-client.git",
-                "reference": "716e1e8e7d0dd683331907aefc992afb89655b9e"
+                "reference": "21341442dc993557ef75018f17ec61dac0936977"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/syrup-php-client/zipball/716e1e8e7d0dd683331907aefc992afb89655b9e",
-                "reference": "716e1e8e7d0dd683331907aefc992afb89655b9e",
+                "url": "https://api.github.com/repos/keboola/syrup-php-client/zipball/21341442dc993557ef75018f17ec61dac0936977",
+                "reference": "21341442dc993557ef75018f17ec61dac0936977",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.3"
             },
             "require-dev": {
-                "codeclimate/php-test-reporter": "^0.4",
+                "monolog/monolog": "^1.24",
                 "phpunit/phpunit": "^5.7",
-                "squizlabs/php_codesniffer": "^3.2"
+                "squizlabs/php_codesniffer": "^3.3"
             },
             "type": "library",
             "autoload": {
@@ -322,7 +322,7 @@
                 }
             ],
             "description": "Keboola Syrup PHP Client",
-            "time": "2018-11-26T17:25:48+00:00"
+            "time": "2018-11-27T12:57:53+00:00"
         },
         {
             "name": "psr/http-message",
@@ -438,16 +438,16 @@
     "packages-dev": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.75.0",
+            "version": "3.76.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "b62357d506a43c1377926d531136e5f1fe824732"
+                "reference": "ae331953146493aa71853b5c675f0b7b48c9c952"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/b62357d506a43c1377926d531136e5f1fe824732",
-                "reference": "b62357d506a43c1377926d531136e5f1fe824732",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/ae331953146493aa71853b5c675f0b7b48c9c952",
+                "reference": "ae331953146493aa71853b5c675f0b7b48c9c952",
                 "shasum": ""
             },
             "require": {
@@ -517,7 +517,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-11-26T09:00:47+00:00"
+            "time": "2018-11-27T05:14:58+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1982,9 +1982,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "keboola/syrup-php-client": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
