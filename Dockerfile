@@ -2,7 +2,7 @@ FROM php:7.1
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update \
-  && apt-get install unzip git unixODBC-dev libpq-dev -y
+  && apt-get install unzip git unixodbc-dev libpq-dev -y
 
 RUN echo "memory_limit = -1" >> /usr/local/etc/php/php.ini
 
