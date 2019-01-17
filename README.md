@@ -9,11 +9,11 @@ Get Credentials from Provisioning API.
 
 If you have already an instance of [Storage API client](https://github.com/keboola/storage-api-php-client) in `$storageApi`, then you can get credentials to transformation database with the following call:
 ```
-$provisioning = new \Keboola\Provisioning\Client('redshift', $storageApi->getTokenString(), $storageApi->getRunId());
+$provisioning = new \Keboola\Provisioning\Client('snowflake', $storageApi->getTokenString(), $storageApi->getRunId());
 $credentials = $provisioning->getCredentials('transformations');
 ```
 
-First argument to `Client` constructor is database backend, which may be either *mysql* or *redshift*. The `$credentials` variable above will contain the following structure:
+First argument to `Client` constructor is database backend, which may be either `snowflake`, `mysql` or `redshift-workspace`. The `$credentials` variable above will contain the following structure:
 
 ```
 array (
@@ -31,7 +31,7 @@ array (
 Resetting credentials is useful when you want to clean up the working schema. Resetting credentials will drop the entire schema and create a new empty one. Resetting credentials does not delete the credentials themselves - i.e. password and user name may remain the same. If you have already an instance of [Storage API client](https://github.com/keboola/storage-api-php-client) in `$storageApi`, then you can get credentials to transformation database with the following call:
 ```
 // get current credentials
-$provisioning = new \Keboola\Provisioning\Client('redshift', $storageApi->getTokenString(), $storageApi->getRunId());
+$provisioning = new \Keboola\Provisioning\Client('snowflake', $storageApi->getTokenString(), $storageApi->getRunId());
 $credentials = $provisioning->getCredentials('transformations');
 
 $provisioning->dropCredentials($credentials['id']);
@@ -94,7 +94,7 @@ SYRUP_QUEUE_URL=
 ```
 - Download Snowflake ODBC Driver from S3
 ```
-docker-compose run --rm -e AWS_ACCESS_KEY=$AWS_ACCESS_KEY -e AWS_SECRET_KEY=$AWS_SECRET_KEY php php docker/downloadOdbcDriver.php
+docker run --rm -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --volume $(pwd):/code keboola/docker-php56-all-db php /code/docker/downloadOdbcDriver.php
 ```
 - Or download snowflake driver from Snowflake support and store it as `./snowflake_linux_x8664_odbc.tgz` 
 
@@ -107,7 +107,7 @@ docker-compose build
 Run tests with following command.
 
 ```
-docker-compose run --rm tests
+docker-compose run --rm php /code/vendor/bin/phpunit
 ```
 
 Please note, for running Docker (RStudio / Jupyter) tests, you need to have async job queue processing running or 

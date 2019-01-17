@@ -114,10 +114,6 @@ class Client
     {
         try {
             $response = $this->getCredentialsRequest($type);
-            // force recreate to reload credentials
-            if ($type == "read" && $this->getBackend() == "redshift") {
-                $response = $this->createCredentialsRequest($type);
-            }
         } catch (CredentialsNotFoundException $e) {
             $response = $this->createCredentialsRequest($type);
         }
