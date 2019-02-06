@@ -18,7 +18,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 
     /**
      * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage MySQL is no longer supported.
+     * @expectedExceptionMessage 'mysql' not found.
      */
     public function testGetCredentials()
     {
@@ -27,7 +27,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 
     /**
      * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage MySQL is no longer supported.
+     * @expectedExceptionMessage 'mysql' not found.
      */
     public function testGetExistingCredentials()
     {
@@ -36,7 +36,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 
     /**
      * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage MySQL is no longer supported.
+     * @expectedExceptionMessage 'mysql' not found.
      */
     public function testGetCredentialsById()
     {
@@ -45,7 +45,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 
     /**
      * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage MySQL is no longer supported.
+     * @expectedExceptionMessage 'mysql' not found.
      */
     public function testKillProcesses()
     {
@@ -54,7 +54,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 
     /**
      * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage MySQL is no longer supported.
+     * @expectedExceptionMessage 'mysql' not found.
      */
     public function testExtendCredentials()
     {
@@ -63,7 +63,7 @@ class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 
     /**
      * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage MySQL is no longer supported.
+     * @expectedExceptionMessage 'mysql' not found.
      */
     public function testDropCredentials()
     {
