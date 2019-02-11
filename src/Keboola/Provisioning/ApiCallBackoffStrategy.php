@@ -15,7 +15,7 @@ use Guzzle\Plugin\Backoff\AbstractErrorCodeBackoffStrategy;
 class ApiCallBackoffStrategy extends AbstractErrorCodeBackoffStrategy
 {
     /** @var array Default HTTP codes errors to retry */
-    protected static $defaultErrorCodes = array(502, 503, 504, 500);
+    protected static $defaultErrorCodes = array(500, 502, 503, 504);
 
     /** @var array Default HTTP codes errors to retry */
     protected static $defaultRetryAfter = 60;
