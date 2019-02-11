@@ -18,7 +18,7 @@ class ApiCallBackoffStrategy extends AbstractErrorCodeBackoffStrategy
     protected static $defaultErrorCodes = array(502, 503, 504, 500);
 
     /** @var array Default HTTP codes errors to retry */
-    protected static $defaultRetryAfter = 5;
+    protected static $defaultRetryAfter = 60;
 
     protected function getDelay($retries, RequestInterface $request, Response $response = null, HttpException $e = null)
     {
