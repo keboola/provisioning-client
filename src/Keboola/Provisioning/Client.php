@@ -81,16 +81,16 @@ class Client
 			CURLOPT_TIMEOUT => $this->timeout
 		));
 
-        $maintenanceBackoff = new BackoffPlugin(
+        $retryStrategy = new BackoffPlugin(
             new TruncatedBackoffStrategy(10,
-                new MaintenanceBackoffStrategy(array(503),
+                new ApiCallBackoffStrategy(ApiCallBackoffStrategy::getDefaultFailureCodes(),
                     new CurlBackoffStrategy(CurlBackoffStrategy::getDefaultFailureCodes(),
                         new ExponentialBackoffStrategy()
                     )
                 )
             )
         );
-        $client->addSubscriber($maintenanceBackoff);
+        $client->addSubscriber($retryStrategy);
 
 		$this->client = $client;
         $syrupUrl = substr($url, 0, strrpos($url, '/'));
