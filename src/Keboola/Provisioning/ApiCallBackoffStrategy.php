@@ -10,15 +10,15 @@ use Guzzle\Plugin\Backoff\AbstractErrorCodeBackoffStrategy;
 /**
  * Strategy used to retry HTTP requests based on the response code.
  *
- * Retries 500 and 503 error by default.
+ * Retries 500, 502, 503 and 504 errors by default.
  */
-class MaintenanceBackoffStrategy extends AbstractErrorCodeBackoffStrategy
+class ApiCallBackoffStrategy extends AbstractErrorCodeBackoffStrategy
 {
     /** @var array Default HTTP codes errors to retry */
-    protected static $defaultErrorCodes = array(503, 500);
+    protected static $defaultErrorCodes = array(502, 503, 504, 500);
 
     /** @var array Default HTTP codes errors to retry */
-    protected static $defaultRetryAfter = 60;
+    protected static $defaultRetryAfter = 5;
 
     protected function getDelay($retries, RequestInterface $request, Response $response = null, HttpException $e = null)
     {
