@@ -10,6 +10,7 @@ services:
     tty: true
     stdin_open: true
     environment:
+      - STORAGE_API_URL
       - PROVISIONING_API_URL
       - SYRUP_QUEUE_URL
       - PROVISIONING_API_TOKEN

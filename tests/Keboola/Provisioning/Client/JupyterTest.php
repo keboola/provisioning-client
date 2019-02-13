@@ -84,7 +84,10 @@ class Keboola_ProvisioningClient_JupyterTest extends \ProvisioningTestCase
 
     public function testCreatePythonTransformationCredentials()
     {
-        $client = new \Keboola\StorageApi\Client(['token' => PROVISIONING_API_TOKEN]);
+        $client = new \Keboola\StorageApi\Client([
+            'url' => STORAGE_API_URL,
+            'token' => PROVISIONING_API_TOKEN
+        ]);
         $components = new \Keboola\StorageApi\Components($client);
         $config = new Configuration();
         $config->setName('test-config');
