@@ -128,6 +128,7 @@
 
 	<target name="tests-ci" depends="prepare" description="Run unit tests with PHPUnit">
 		<exec executable="phpunit" failonerror="true">
+            <env key="STORAGE_API_URL" value="${storage-api-url}"/>
             <env key="PROVISIONING_API_URL" value="${provisioning-api-url}"/>
             <env key="PROVISIONING_API_TOKEN" value="${provisioning-api-token}"/>
             <env key="PROVISIONING_API_TOKEN_SECOND_PROJECT" value="${provisioning-api-token-second-project}"/>

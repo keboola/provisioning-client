@@ -8,6 +8,9 @@ if (file_exists(ROOT_PATH . '/config.php')) {
 	require_once ROOT_PATH . '/config.php';
 }
 
+defined('STORAGE_API_URL')
+	|| define('STORAGE_API_URL', getenv('STORAGE_API_URL') ? getenv('STORAGE_API_URL') : 'url');
+
 defined('PROVISIONING_API_URL')
 	|| define('PROVISIONING_API_URL', getenv('PROVISIONING_API_URL') ? getenv('PROVISIONING_API_URL') : 'url');
 
