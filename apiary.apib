@@ -9,7 +9,6 @@ All API calls require `X-StorageApi-Token` header with a valid Storage API token
 
 Provisioning API serves multiple backend credentials, depending on the configuration of your project.
 
-- **mysql** - MySQL/MariaDB database provided by Keboola, serving mainly for sandboxes and transformations
 - **redshift**  - (referred to as `redshift-workspace`) Creates a new Redshift workspace in your Redshift cluster for sandbox, transformations, Redshift database writer or Luckyguess
 - **snowflake**  - Creates a new Snowflake workspace in your project for sandbox, transformations, Snowflake database writer or Luckyguess
 - **docker** - A Docker container runnning on our infrastructure, giving you access to RStudio or Jupyter
@@ -17,10 +16,6 @@ Provisioning API serves multiple backend credentials, depending on the configura
 Each backend supports multiple types of usage. Allowed types for each backend are
 
 <table>
-    <tr>
-        <td><code>mysql</code></td>
-        <td><code>transformations</code>, <code>sandbox</code></td>
-    </tr>
     <tr>
         <td><code>snowflake</code></td>
         <td><code>transformations</code>, <code>sandbox</code>, <code>writer</code>, <code>luckyguess</code></td>
@@ -43,7 +38,7 @@ Note: `docker` backend has to use async actions for creating or deleting credent
 ## Create Credentials [/{backend}]
 
 + Parameters
-    + backend (string) - `mysql`, `snowflake` or `redshift-workspace`
+    + backend (string) - `snowflake` or `redshift-workspace`
 
 ### Create Credentials [POST]
 
@@ -79,13 +74,13 @@ Create new credentials for given token or return existing credentials, if they a
             "id": "1386700227",
             "status": "ok",
             "touch": "123456"
-            "url": "mysql/1386700227"
+            "url": "snowflake/1386700227"
         }
 
 ## List Credentials [/{backend}?type={type}]
 
 + Parameters
-    + backend (string) - `mysql`, `snowflake`, `redshift-workspace` or `docker`
+    + backend (string) - `snowflake`, `redshift-workspace` or `docker`
 
 
 ### List Credentials [GET]
@@ -122,7 +117,7 @@ Get available credentials for the given `type`. Useful when credentials id is no
 ## Credentials [/{backend}/{credentials_id}]
 
 + Parameters
-    + backend (string) - `mysql`, `snowflake`, `redshift-workspace` or `docker`
+    + backend (string) - `snowflake`, `redshift-workspace` or `docker`
     + credentials_id(required, int) - ID of the credentials
 
 
@@ -170,7 +165,7 @@ Delete credentials and their resources. Note that Docker backend only supports a
 ## Kill Processes [/{backend}/{credentials_id}/kill]
 
 + Parameters
-    + backend (string) - `mysql`, `snowflake` or `redshift-workspace`
+    + backend (string) - `snowflake` or `redshift-workspace`
     + credentials_id(required, int) - ID of the credentials
 
 ### Kill Processes [POST]
@@ -191,7 +186,7 @@ Terminate all running processes
 ## Extend Credentials [/{backend}/{credentials_id}/extend]
 
 + Parameters
-    + backend (string) - `mysql`, `snowflake`, `docker` or `redshift-workspace`
+    + backend (string) - `snowflake`, `docker` or `redshift-workspace`
     + credentials_id(required, int) - ID of the credentials
 
 ### Extend Credentials [POST]
