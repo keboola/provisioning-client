@@ -50,8 +50,8 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $this->assertArrayHasKey("touch", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
@@ -75,9 +75,9 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("touch", $result);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
@@ -103,9 +103,9 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
         $this->assertArrayHasKey("touch", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
@@ -130,9 +130,9 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
         $this->assertArrayHasKey("touch", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
@@ -159,9 +159,9 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
         $this->assertArrayHasKey("touch", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         $conn->close();
@@ -182,9 +182,9 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
         $this->assertArrayHasKey("touch", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $this->client->dropCredentials($result["id"]);
     }
 
@@ -281,7 +281,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
     public function testDropWorkspace()
     {
         $result = $this->client->getCredentials();
-        $workspaceId = $result["workspaceId"];
+        $workspaceId = $result["credentials"]["workspaceId"];
         $storageApiClient = new \Keboola\StorageApi\Client([
             'url' => STORAGE_API_URL,
             'token' => PROVISIONING_API_TOKEN
