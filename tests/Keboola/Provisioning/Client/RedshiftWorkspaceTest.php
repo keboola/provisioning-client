@@ -288,7 +288,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         ]);
         $storageApiClient->apiDelete("storage/workspaces/{$workspaceId}");
         $result = $this->client->getCredentials();
-        $this->assertNotEquals($result["workspaceId"], $workspaceId);
+        $this->assertNotEquals($result["credentials"]["workspaceId"], $workspaceId);
     }
 
     /**

@@ -302,7 +302,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         ]);
         $storageApiClient->apiDelete("storage/workspaces/{$workspaceId}");
         $result = $this->client->getCredentials();
-        $this->assertNotEquals($result["workspaceId"], $workspaceId);
+        $this->assertNotEquals($result["credentials"]["workspaceId"], $workspaceId);
     }
 
     /**
