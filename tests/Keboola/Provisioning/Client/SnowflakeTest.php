@@ -50,6 +50,9 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
         $this->assertArrayHasKey("touch", $result);
+
+        $this->assertInternalType('string', $result["credentials"]["workspaceId"]);
+
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         odbc_close($conn);
