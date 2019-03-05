@@ -65,7 +65,7 @@ Create new credentials for given token or return existing credentials, if they a
 
         {
             "credentials": {
-                "id": "49",
+                "id": 49,
                 "hostname": "keboola.snowflakecomputing.com",
                 "port": null,
                 "db": "sapi_232",
@@ -75,7 +75,7 @@ Create new credentials for given token or return existing credentials, if they a
                 "password": "ZG7dHp5wUHXCzm5zu99uVRStvvuk4Bjb",
                 "workspaceId": "485895075"
             },
-            "id": "49",
+            "id": 49,
             "touch": 1551197297
             "url": "snowflake/49"
         }
@@ -104,9 +104,9 @@ Get available credentials for the given `type`. Useful when credentials id is no
 
         {
             "credentials": {
-                "id": "49",
+                "id": 49,
                 "hostname": "keboola.snowflakecomputing.com",
-                "port": null,
+                "port": 443,
                 "db": "sapi_232",
                 "schema": "WORKSPACE_485895075",
                 "warehouse": "KEBOOLA_PROD",
@@ -114,7 +114,7 @@ Get available credentials for the given `type`. Useful when credentials id is no
                 "password": "ZG7dHp5wUHXCzm5zu99uVRStvvuk4Bjb",
                 "workspaceId": "485895075"
             },
-            "id": "49",
+            "id": 49,
             "inUse": false,
             "touch": 1551197297
         }
@@ -142,9 +142,9 @@ Get available credentials for the given `type`. Useful when credentials id is no
 
         {
             "credentials": {
-                "id": "49",
+                "id": 49,
                 "hostname": "keboola.snowflakecomputing.com",
-                "port": null,
+                "port": 443,
                 "db": "sapi_232",
                 "schema": "WORKSPACE_485895075",
                 "warehouse": "KEBOOLA_PROD",
@@ -152,7 +152,7 @@ Get available credentials for the given `type`. Useful when credentials id is no
                 "password": "ZG7dHp5wUHXCzm5zu99uVRStvvuk4Bjb",
                 "workspaceId": "485895075"
             },
-            "id": "49",
+            "id": 49,
             "touch": 1551197297
             "inUse": false,
         }
@@ -212,8 +212,8 @@ Marks credentials as being used and resets the validity period.
 
 
         {
-            "touch": "123456",
-            "id": "1386700227"
+            "touch": 1551197297,
+            "id": 1386700227
         }
 
 
@@ -235,7 +235,7 @@ You need to call Provisioning API again to obtain details of the credentials.
 
 ```
 {
-    "id": 206296229,
+    "id": 43,
     "runId": "206296230",
     "component": "keboola-provisioning-bundle",
     "command": "create",
@@ -301,7 +301,7 @@ You need to call Provisioning API again to obtain details of the credentials.
 
 ```
 {
-    "id": 206296229,
+    "id": 43,
     "runId": "206296230",
     "component": "keboola-provisioning-bundle",
     "command": "create",
@@ -368,7 +368,7 @@ finished, the result will be contained in the `result` node.
 
 ```
 {
-    "id": 206298086,
+    "id": 43,
     "runId": "206298087",
     "component": "keboola-provisioning-bundle",
     "command": "delete",
@@ -392,7 +392,7 @@ finished, the result will be contained in the `result` node.
 + Response 200 (application/json)
 
         {
-            "id": "206298086",
+            "id": 43,
             "url": "http://syrup-queue.kbc-devel-02.keboola.com/app_dev.php/queue/job/206298086",
             "status": "waiting"
         }
