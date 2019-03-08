@@ -47,9 +47,12 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $this->assertArrayHasKey("touch", $result);
+
+        $this->assertInternalType('string', $result["credentials"]["workspaceId"]);
+
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
         odbc_close($conn);
@@ -75,8 +78,8 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $this->assertArrayHasKey("touch", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
@@ -103,8 +106,8 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $this->assertArrayHasKey("touch", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
@@ -131,8 +134,8 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $this->assertArrayHasKey("touch", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
@@ -185,8 +188,8 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("password", $result["credentials"]);
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $this->assertArrayHasKey("touch", $result);
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
@@ -209,8 +212,8 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("user", $result["credentials"]);
         $this->assertArrayHasKey("schema", $result["credentials"]);
         $this->assertArrayHasKey("warehouse", $result["credentials"]);
+        $this->assertArrayHasKey("workspaceId", $result["credentials"]);
         $this->assertArrayHasKey("id", $result);
-        $this->assertArrayHasKey("workspaceId", $result);
         $this->assertArrayHasKey("touch", $result);
         $this->client->dropCredentials($result["id"]);
     }
@@ -295,14 +298,14 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
     public function testDropWorkspace()
     {
         $result = $this->client->getCredentials();
-        $workspaceId = $result["workspaceId"];
+        $workspaceId = $result["credentials"]["workspaceId"];
         $storageApiClient = new \Keboola\StorageApi\Client([
             'url' => STORAGE_API_URL,
             'token' => PROVISIONING_API_TOKEN
         ]);
         $storageApiClient->apiDelete("storage/workspaces/{$workspaceId}");
         $result = $this->client->getCredentials();
-        $this->assertNotEquals($result["workspaceId"], $workspaceId);
+        $this->assertNotEquals($result["credentials"]["workspaceId"], $workspaceId);
     }
 
     /**
