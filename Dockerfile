@@ -20,7 +20,9 @@ RUN set -x \
     && docker-php-source delete
 
 ## install snowflake drivers
-ADD ./snowflake_linux_x8664_odbc.tgz /usr/bin
+ADD https://sfc-repo.snowflakecomputing.com/odbc/linux/2.16.10/snowflake_linux_x8664_odbc-2.16.10.tgz snowflake_linux_x8664_odbc-2.16.10.tgz
+RUN tar -xvzf snowflake_linux_x8664_odbc-2.16.10.tgz \
+  && mv snowflake_odbc /usr/bin/
 COPY ./docker/snowflake/simba.snowflake.ini /etc/simba.snowflake.ini
 COPY ./docker/snowflake/odbcinst.ini /etc/odbcinst.ini
 RUN mkdir -p  /usr/bin/snowflake_odbc/log

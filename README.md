@@ -91,11 +91,6 @@ PROVISIONING_API_URL=
 PROVISIONING_API_TOKEN=
 SYRUP_QUEUE_URL=
 ```
-- Download Snowflake ODBC Driver from S3
-```
-docker run --rm -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --volume $(pwd):/code keboola/docker-php56-all-db php /code/docker/downloadOdbcDriver.php
-```
-- Or download snowflake driver from Snowflake support and store it as `./snowflake_linux_x8664_odbc.tgz` 
 
 - Build Docker image
 ```
