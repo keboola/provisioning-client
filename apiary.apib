@@ -116,7 +116,8 @@ Get available credentials for the given `type`. Useful when credentials id is no
             },
             "id": 49,
             "inUse": false,
-            "touch": 1551197297
+            "touch": 1551197297,
+            "canExtend": false
         }
 
 
@@ -153,8 +154,9 @@ Get available credentials for the given `type`. Useful when credentials id is no
                 "workspaceId": "485895075"
             },
             "id": 49,
-            "touch": 1551197297
+            "touch": 1551197297,
             "inUse": false,
+            "canExtend": false
         }
 
 ### Drop Credentials Sync [DELETE]
@@ -200,7 +202,7 @@ Terminate all running processes
 
 ### Extend Credentials [POST]
 
-Marks credentials as being used and resets the validity period.
+Marks credentials as being used and resets the validity period. If the backend refuses to extend the credentials (see `canExtend` flag), the reponse 400 is used.
 
 + Request
     + Headers
@@ -214,6 +216,15 @@ Marks credentials as being used and resets the validity period.
         {
             "touch": 1551197297,
             "id": 1386700227
+        }
+
+
++ Response 400
+
+
+        {
+            "status": "warning",
+            "message": "The sandbox cannot be extended."
         }
 
 
