@@ -205,7 +205,7 @@ Terminate all running processes
 
 ### Extend Credentials [POST]
 
-Marks credentials as being used and resets the validity period. If the backend refuses to extend the credentials (see `canExtend` flag), the reponse 400 is used.
+Marks credentials as being used and extends the expiration timeout. If the backend refuses to extend the credentials (see `canExtend` flag), the reponse 400 is used.
 
 + Request
     + Headers
