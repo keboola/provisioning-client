@@ -11,7 +11,7 @@ Provisioning API serves multiple backend credentials, depending on the configura
 
 - **redshift**  - (referred to as `redshift-workspace`) Creates a new Redshift workspace in your Redshift cluster for sandbox, transformations, Redshift database writer or Luckyguess
 - **snowflake**  - Creates a new Snowflake workspace in your project for sandbox, transformations, Snowflake database writer or Luckyguess
-- **docker** - A Docker container runnning on our infrastructure, giving you access to RStudio or Jupyter
+- **docker** - A Docker container runnning on our infrastructure, giving you access to RStudio, Jupyter (Jupyter Notebook with Python3) or Julipyter (Jupyter Notebook with Julia)
 
 Each backend supports multiple types of usage. Allowed types for each backend are
 
@@ -26,7 +26,7 @@ Each backend supports multiple types of usage. Allowed types for each backend ar
     </tr>
     <tr>
         <td><code>docker</code></td>
-        <td><code>jupyter</code>, <code>rstudio</code></td>
+        <td><code>jupyter</code>, <code>rstudio</code>, <code>julipyter</code></td>
     </tr>
 </table>
 
@@ -94,7 +94,7 @@ Get available credentials for the given `type`. Useful when credentials id is no
 + inUse - if the credentials currently have a process using them (there is a connection on the server)
 
 + Parameters
-    + type(optional, string) - allowed values `transformations`, `sandbox`, `writer`, `luckyguess`, `writer`, `read`, `rstudio` or `jupyter`, default `transformations`
+    + type(optional, string) - allowed values `transformations`, `sandbox`, `writer`, `luckyguess`, `writer`, `read`, `rstudio`, `jupyter` or `julipyter`, default `transformations`
 
 + Request
     + Headers
@@ -276,7 +276,7 @@ You need to call Provisioning API again to obtain details of the credentials.
 ```
 
 #### Attributes
-+ type (required, string) - determines the type of the created credentials. Valid values are `rstudio` and `jupyter`.
++ type (required, string) - determines the type of the created credentials. Valid values are `rstudio`, `jupyter` and `julipyter`.
 + script (optional, string) - code preloaded to the sandobx.
 + input (optional, array) - sandbox input mapping containing tables and files preloaded into the sandbox. Definition follows the [common schema](https://github.com/keboola/docker-bundle/blob/master/Resources/schemas/configuration.json#L30)
 
