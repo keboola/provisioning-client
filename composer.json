@@ -20,5 +20,15 @@
     "require": {
         "guzzle/guzzle": "~3.7",
         "keboola/syrup-php-client": "^5.2"
+    },
+    "scripts": {
+        "tests": "./vendor/bin/phpunit",
+        "build": [
+            "@tests"
+        ],
+        "ci": [
+            "@composer validate --no-check-all --strict",
+            "@build"
+        ]
     }
 }
