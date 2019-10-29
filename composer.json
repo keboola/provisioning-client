@@ -23,7 +23,7 @@
         "keboola/syrup-php-client": "^5.2"
     },
     "scripts": {
-        "tests": "./vendor/bin/phpunit",
+        "tests": "composer install --prefer-dist --no-interaction && ./vendor/bin/phpunit",
         "build": [
             "@tests"
         ],
