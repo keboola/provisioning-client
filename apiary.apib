@@ -412,3 +412,27 @@ finished, the result will be contained in the `result` node.
             "status": "waiting"
         }
 
+## Input data Async [/async/docker/{credentials_id}/input]
+
++ Parameters
+    + credentials_id(required, int) - ID of the credentials
+
+### Input Data Async [POST]
+Asynchronously load data to the dicker sandbox
+
+#### Attributes
++ input (array) - sandbox input mapping containing tables and files preloaded into the sandbox. Definition follows the [common schema](https://github.com/keboola/docker-bundle/blob/master/Resources/schemas/configuration.json#L30)
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+
++ Response 200 (application/json)
+
+        {
+            "id": 43,
+            "url": "https://syrup.us-east-01.keboola-testing.com/queue/job/206298221",
+            "status": "waiting"
+        }
+
