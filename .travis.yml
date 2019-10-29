@@ -12,3 +12,7 @@ before_install:
 script:
   - docker-compose build
   - docker-compose run --rm php composer ci
+
+notifications:
+  slack:
+    secure: EG16rESG7QzR/0TvDfLhjc8NDd37ym50RzfHxWr1k5x5B7pRQwjL0Bso+LO0/L4HqoxaYhnFFM7gs4uBuPXZEr54WHFgNVVShLdr4KZIebil+rqCtYCvfaL2b73HaNhHwfmkAPxpB62rT9sQZJh62dElHDIFhK2c+tvoZ6rdypE=
