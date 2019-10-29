@@ -43,4 +43,22 @@ class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
         $this->assertEquals('input', $response['command']);
         $this->assertEquals('success', $response['status']);
     }
+
+    public function testInvalidInputData()
+    {
+        $result = $this->client->getCredentialsAsync("jupyter");
+        try {
+            $response = $this->client->loadData($result['id'], 'input: {
+                tables: [
+                    [
+                        source: "in.c-sandbox.test",
+                        destination => "source.csv"
+                    ]
+                ]
+            }');
+            $this->fail('incorrect message body should fail');
+        } catch (\Exception $e) {
+            echo $e->getMessage() . " error code " . $e->getCode();
+        }
+    }
 }
