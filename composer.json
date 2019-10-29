@@ -1,6 +1,7 @@
 {
     "name": "keboola/provisioning-client",
     "description": "Keboola Provisioning Client",
+    "license": "MIT",
     "authors": [
         {
             "name": "Keboola",
@@ -12,6 +13,11 @@
             "Keboola\\Provisioning": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Keboola\\Provisioning\\Tests\\": "tests/Keboola/Provisioning/Client"
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
         "doctrine/orm": "~2.3.0",
@@ -20,5 +26,15 @@
     "require": {
         "guzzle/guzzle": "~3.7",
         "keboola/syrup-php-client": "^5.2"
+    },
+    "scripts": {
+        "tests": "./vendor/bin/phpunit",
+        "build": [
+            "@tests"
+        ],
+        "ci": [
+            "@composer validate --no-check-all --strict",
+            "@build"
+        ]
     }
 }
