@@ -29,10 +29,10 @@ class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
 
         $response = $this->client->loadData($result['id'], 'input: {
             tables: [
-                [
+                {
                     source: "in.c-sandbox.test",
-                    destination => "source.csv",
-                ]
+                    destination: "source.csv"
+                }
             ]
         }');
 
