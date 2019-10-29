@@ -71,4 +71,25 @@ class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
         $this->assertEquals('input', $response['command']);
         $this->assertEquals('success', $response['status']);
     }
+
+    public function testOutputData()
+    {
+        $result = $this->client->getCredentialsAsync("jupyter");
+
+        $response = $this->client->unloadData($result['id'], 'output: {
+            tables: [
+                {
+                    source: "source.csv",
+                    destination => "in.c-sandbox.test",
+                }
+            ]
+        }');
+
+        $this->assertArrayHasKey('id', $response);
+        $this->assertArrayHasKey('component', $response);
+        $this->assertArrayHasKey('command', $response);
+        $this->assertArrayHasKey('status', $response);
+        $this->assertEquals('output', $response['command']);
+        $this->assertEquals('success', $response['status']);
+    }
 }
