@@ -8,12 +8,8 @@ services:
 before_install:
   - docker -v
   - docker-compose  -v
-
-install:
   - docker-compose build
-
-script:
-  - docker-compose run --rm tests composer ci
+  - docker-compose run --rm tests
 
 notifications:
   slack:

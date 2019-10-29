@@ -5,11 +5,10 @@ services:
   tests:
     build: .
     image: keboola/provisioning-client
-    volumes:
-      - .:/code
     working_dir: /code
     tty: true
     stdin_open: true
+    command: composer ci
     environment:
       - STORAGE_API_URL
       - PROVISIONING_API_URL
