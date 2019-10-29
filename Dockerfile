@@ -1,5 +1,9 @@
 FROM php:7.1
+
 ENV DEBIAN_FRONTEND noninteractive
+ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_PROCESS_TIMEOUT 3600
+ARG COMPOSER_FLAGS="--prefer-dist --no-interaction"
 
 RUN apt-get update \
   && apt-get install unzip git unixodbc-dev libpq-dev -y
@@ -31,12 +35,19 @@ ENV SIMBAINI /etc/simba.snowflake.ini
 ENV SSL_DIR /usr/bin/snowflake_odbc/SSLCertificates/nssdb
 ENV LD_LIBRARY_PATH /usr/bin/snowflake_odbc/lib
 
-
-RUN cd \
-  && curl -sS https://getcomposer.org/installer | php \
-  && ln -s /root/composer.phar /usr/local/bin/composer
-
-COPY ./ /code
+# install composer
+COPY docker/composer-install.sh /tmp/composer-install.sh
+RUN chmod +x /tmp/composer-install.sh
+RUN /tmp/composer-install.sh
 
 WORKDIR /code
-RUN composer install --prefer-dist --no-interaction
+
+## deps always cached unless changed
+# First copy only composer files
+COPY composer.* /code/
+# Download dependencies, but don't run scripts or init autoloaders as the app is missing
+RUN composer install $COMPOSER_FLAGS --no-scripts --no-autoloader
+# copy rest of the app
+COPY . /code/
+# run normal composer - all deps are cached already
+RUN composer install $COMPOSER_FLAGS
