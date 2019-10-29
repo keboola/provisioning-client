@@ -1,6 +1,7 @@
 {
     "name": "keboola/provisioning-client",
     "description": "Keboola Provisioning Client",
+    "license": "MIT",
     "authors": [
         {
             "name": "Keboola",
