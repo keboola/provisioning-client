@@ -2,8 +2,9 @@ version: "2"
 
 services:
 
-  php:
+  tests:
     build: .
+    image: keboola/provisioning-client
     volumes:
       - .:/code
     working_dir: /code

@@ -9,9 +9,11 @@ before_install:
   - docker -v
   - docker-compose  -v
 
-script:
+install:
   - docker-compose build
-  - docker-compose run --rm php composer ci
+
+script:
+  - docker-compose run --rm tests composer ci
 
 notifications:
   slack:
