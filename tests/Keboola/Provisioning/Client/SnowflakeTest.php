@@ -1,18 +1,15 @@
 <?php
-/**
- *
- * User: Ondrej Hlavacek
- * Date: 10.7.2014
- *
- */
+
 require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
+use Keboola\Provisioning\CredentialsNotFoundException;
+use PHPUnit\Framework\Error\Warning;
 
 class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
 {
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("snowflake", "sandbox", PROVISIONING_API_TOKEN);
@@ -21,7 +18,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         \ProvisioningTestCase::cleanUp("snowflake", "writer", PROVISIONING_API_TOKEN);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("snowflake", "sandbox", PROVISIONING_API_TOKEN);
@@ -30,14 +27,11 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         \ProvisioningTestCase::cleanUp("snowflake", "writer", PROVISIONING_API_TOKEN);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = new Client("snowflake", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
     }
 
-    /**
-     *
-     */
     public function testCreateTransformationCredentials()
     {
         $result = $this->client->getCredentials();
@@ -51,7 +45,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("id", $result);
         $this->assertArrayHasKey("touch", $result);
 
-        $this->assertInternalType('string', $result["credentials"]["workspaceId"]);
+        $this->assertIsString($result["credentials"]["workspaceId"]);
 
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
@@ -66,9 +60,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
 
     }
 
-    /**
-     *
-     */
     public function testCreateSandboxCredentials()
     {
         $result = $this->client->getCredentials("sandbox");
@@ -94,9 +85,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
 
     }
 
-    /**
-     *
-     */
     public function testCreateLuckyguessCredentials()
     {
         $result = $this->client->getCredentials("luckyguess");
@@ -121,10 +109,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($result["id"]);
     }
 
-
-    /**
-     *
-     */
     public function testCreateWriterCredentials()
     {
         $result = $this->client->getCredentials("writer");
@@ -149,9 +133,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($result["id"]);
     }
 
-    /**
-     *
-     */
     public function testCreateWriterCredentialsTimeout()
     {
         $result = $this->client->getCredentials("writer");
@@ -161,11 +142,11 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         try {
             odbc_exec($conn, "CALL SYSTEM\$WAIT(70);");
             $this->fail("Query didn't time out.");
-        } catch(\PHPUnit_Framework_Error_Warning $e) {
+        } catch(Warning $e) {
             if (strpos($e->getMessage(), 'SFExecuteQueryTimeout') !== false) {
-                $this->assertContains("SFExecuteQueryTimeout", $e->getMessage());
+                $this->assertStringContainsString("SFExecuteQueryTimeout", $e->getMessage());
             } else {
-                $this->assertContains("timeout", $e->getMessage());
+                $this->assertStringContainsString("timeout", $e->getMessage());
             }
         } finally {
             odbc_close($conn);
@@ -173,10 +154,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         }
     }
 
-
-    /**
-     *
-     */
     public function testGetCredentials()
     {
         $result = $this->client->getCredentials();
@@ -197,9 +174,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($id);
     }
 
-    /**
-     *
-     */
     public function testGetExistingCredentials()
     {
         $this->assertFalse($this->client->getExistingCredentials());
@@ -218,18 +192,13 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($result["id"]);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
     public function testGetCredentialsException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->getCredentialsById("123456");
     }
 
-    /**
-     *
-     */
     public function testKillProcesses()
     {
         $this->markTestSkipped(
@@ -245,19 +214,13 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($id);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
-
     public function testKillProcessesException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->killProcesses("123456");
     }
 
-    /**
-     *
-     */
     public function testDropCredentials()
     {
         $result = $this->client->getCredentials();
@@ -283,18 +246,13 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         odbc_close($conn);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
     public function testDropCredentialsException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->dropCredentials("123456");
     }
 
-    /**
-     *
-     */
     public function testDropWorkspace()
     {
         $result = $this->client->getCredentials();
@@ -308,20 +266,16 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertNotEquals($result["credentials"]["workspaceId"], $workspaceId);
     }
 
-    /**
-     *
-     */
     public function testExtendCredentials()
     {
         $result = $this->client->getCredentials();
         try {
             $this->client->extendCredentials($result["id"]);
         } catch (\Keboola\Provisioning\Exception $e) {
-            $this->assertContains('Cannot extend workspace credentials', $e->getMessage());
+            $this->assertStringContainsString('Cannot extend workspace credentials', $e->getMessage());
         }
         $this->client->dropCredentials($result["id"]);
     }
-
 
     /**
      * @param $credentials

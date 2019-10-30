@@ -8,65 +8,54 @@
 require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
+use Keboola\Provisioning\Exception;
 
 class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = new Client("mysql", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage 'mysql' not found.
-     */
     public function testGetCredentials()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'mysql\' not found.');
         $this->client->getCredentials();
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage 'mysql' not found.
-     */
     public function testGetExistingCredentials()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'mysql\' not found.');
         $this->client->getExistingCredentials();
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage 'mysql' not found.
-     */
     public function testGetCredentialsById()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'mysql\' not found.');
         $this->client->getCredentialsById("123456");
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage 'mysql' not found.
-     */
     public function testKillProcesses()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'mysql\' not found.');
         $this->client->killProcesses('123456');
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage 'mysql' not found.
-     */
     public function testExtendCredentials()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'mysql\' not found.');
         $this->client->extendCredentials("123456");
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\Exception
-     * @expectedExceptionMessage 'mysql' not found.
-     */
     public function testDropCredentials()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'mysql\' not found.');
         $this->client->dropCredentials("123456");
     }
 }

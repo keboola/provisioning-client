@@ -1,16 +1,12 @@
 <?php
-/**
- *
- * User: Ondřej Hlaváček
- * Date: 13.8.12
- * Time: 8:52
- *
- */
 
-class ProvisioningTestCase extends \PHPUnit_Framework_TestCase
+use Keboola\Provisioning\Client;
+use PHPUnit\Framework\TestCase;
+
+class ProvisioningTestCase extends TestCase
 {
     /**
-   	 * @var \Keboola\Provisioning\Client
+   	 * @var Client
    	 */
    	protected $client;
 
