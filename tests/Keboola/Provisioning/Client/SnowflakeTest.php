@@ -4,6 +4,7 @@ require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
 use Keboola\Provisioning\CredentialsNotFoundException;
+use PHPUnit\Framework\Error\Warning;
 
 class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
 {
@@ -141,7 +142,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         try {
             odbc_exec($conn, "CALL SYSTEM\$WAIT(70);");
             $this->fail("Query didn't time out.");
-        } catch(\PHPUnit_Framework_Error_Warning $e) {
+        } catch(Warning $e) {
             if (strpos($e->getMessage(), 'SFExecuteQueryTimeout') !== false) {
                 $this->assertContains("SFExecuteQueryTimeout", $e->getMessage());
             } else {
