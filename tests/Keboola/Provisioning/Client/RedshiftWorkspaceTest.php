@@ -234,8 +234,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
 
     public function testMetaQuery() {
         $this->expectException(DBALException::class);
-        $this->expectExceptionMessage('An exception occurred while executing \'SELECT * FROM SVV_TABLE_INFO;\':
-SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info\' contains \'/SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info/');
+        $this->expectExceptionMessageMatches('/SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info/');
         $result = $this->client->getCredentials();
         $conn = $this->connect($result["credentials"]);
         $conn->query("SELECT * FROM SVV_TABLE_INFO;");
