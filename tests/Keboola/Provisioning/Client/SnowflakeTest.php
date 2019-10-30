@@ -44,7 +44,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertArrayHasKey("id", $result);
         $this->assertArrayHasKey("touch", $result);
 
-        $this->assertInternalType('string', $result["credentials"]["workspaceId"]);
+        $this->assertIsString($result["credentials"]["workspaceId"]);
 
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
@@ -271,7 +271,7 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         try {
             $this->client->extendCredentials($result["id"]);
         } catch (\Keboola\Provisioning\Exception $e) {
-            $this->assertContains('Cannot extend workspace credentials', $e->getMessage());
+            $this->assertStringContainsString('Cannot extend workspace credentials', $e->getMessage());
         }
         $this->client->dropCredentials($result["id"]);
     }

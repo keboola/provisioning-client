@@ -50,7 +50,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertArrayHasKey("id", $result);
         $this->assertArrayHasKey("touch", $result);
 
-        $this->assertInternalType('string', $result["credentials"]["workspaceId"]);
+        $this->assertIsString($result["credentials"]["workspaceId"]);
 
         $conn = $this->connect($result["credentials"]);
         $this->dbQuery($conn);
@@ -260,7 +260,7 @@ SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relatio
         try {
             $this->client->extendCredentials($result["id"]);
         } catch (\Keboola\Provisioning\Exception $e) {
-            $this->assertContains('Cannot extend workspace credentials', $e->getMessage());
+            $this->assertStringContainsString('Cannot extend workspace credentials', $e->getMessage());
         }
         $this->client->dropCredentials($result["id"]);
     }
