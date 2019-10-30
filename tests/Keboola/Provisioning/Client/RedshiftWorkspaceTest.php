@@ -1,13 +1,10 @@
 <?php
-/**
- *
- * User: Ondrej Hlavacek
- * Date: 10.7.2014
- *
- */
+
 require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
+use Keboola\Provisioning\CredentialsNotFoundException;
+use Doctrine\DBAL\DBALException;
 
 class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTestCase
 {
@@ -40,9 +37,6 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
 
     }
 
-    /**
-     *
-     */
     public function testCreateTransformationCredentials()
     {
         $result = $this->client->getCredentials();
@@ -68,9 +62,6 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->client->dropCredentials($result["id"]);
     }
 
-    /**
-     *
-     */
     public function testCreateSandboxCredentials()
     {
         $result = $this->client->getCredentials("sandbox");
@@ -96,9 +87,6 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
 
     }
 
-    /**
-     *
-     */
     public function testCreateLuckyguessCredentials()
     {
         $result = $this->client->getCredentials("luckyguess");
@@ -123,9 +111,6 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->client->dropCredentials($result["id"]);
     }
 
-    /**
-     *
-     */
     public function testCreateWriterCredentials()
     {
         $result = $this->client->getCredentials("writer");
@@ -150,9 +135,6 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->client->dropCredentials($result["id"]);
     }
 
-    /**
-     *
-     */
     public function testGetCredentials()
     {
         $result = $this->client->getCredentials();
@@ -173,9 +155,6 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->client->dropCredentials($id);
     }
 
-    /**
-     *
-     */
     public function testGetExistingCredentials()
     {
         $this->assertFalse($this->client->getExistingCredentials());
@@ -193,18 +172,13 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->client->dropCredentials($result["id"]);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
     public function testGetCredentialsException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->getCredentialsById("123456");
     }
 
-    /**
-     *
-     */
     public function testKillProcesses()
     {
         $result = $this->client->getCredentials();
@@ -217,22 +191,16 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->client->dropCredentials($id);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
-
     public function testKillProcessesException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->killProcesses("123456");
     }
 
-
-    /**
-     * @expectedException PDOException
-     */
     public function testDropCredentialsWithoutTerminating()
     {
+        $this->expectException(PDOException::class);
         $result = $this->client->getCredentials();
         $conn = $this->connect($result["credentials"]);
         $this->assertTrue($this->dbQuery($conn));
@@ -242,9 +210,6 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->connect($result["credentials"]);
     }
 
-    /**
-     *
-     */
     public function testDropCredentials()
     {
         $this->markTestSkipped(
@@ -260,29 +225,21 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $conn->close();
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
     public function testDropCredentialsException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->dropCredentials("123456");
     }
 
-    /**
-     * @expectedException  \Doctrine\DBAL\DBALException
-     * @expectedExceptionMessageRegExp  /SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info/
-     */
     public function testMetaQuery() {
+        $this->expectException(DBALException::class);
+        $this->expectExceptionMessage('/SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for relation svv_table_info/');
         $result = $this->client->getCredentials();
         $conn = $this->connect($result["credentials"]);
         $conn->query("SELECT * FROM SVV_TABLE_INFO;");
     }
 
-
-    /**
-     *
-     */
     public function testDropWorkspace()
     {
         $result = $this->client->getCredentials();
@@ -296,9 +253,6 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         $this->assertNotEquals($result["credentials"]["workspaceId"], $workspaceId);
     }
 
-    /**
-     *
-     */
     public function testExtendCredentials()
     {
         $result = $this->client->getCredentials();

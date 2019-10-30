@@ -1,13 +1,9 @@
 <?php
-/**
- *
- * User: Ondrej Hlavacek
- * Date: 10.7.2014
- *
- */
+
 require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
 use Keboola\Provisioning\Client;
+use Keboola\Provisioning\CredentialsNotFoundException;
 
 class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
 {
@@ -35,9 +31,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client = new Client("snowflake", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
     }
 
-    /**
-     *
-     */
     public function testCreateTransformationCredentials()
     {
         $result = $this->client->getCredentials();
@@ -66,9 +59,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
 
     }
 
-    /**
-     *
-     */
     public function testCreateSandboxCredentials()
     {
         $result = $this->client->getCredentials("sandbox");
@@ -94,9 +84,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
 
     }
 
-    /**
-     *
-     */
     public function testCreateLuckyguessCredentials()
     {
         $result = $this->client->getCredentials("luckyguess");
@@ -121,10 +108,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($result["id"]);
     }
 
-
-    /**
-     *
-     */
     public function testCreateWriterCredentials()
     {
         $result = $this->client->getCredentials("writer");
@@ -149,9 +132,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($result["id"]);
     }
 
-    /**
-     *
-     */
     public function testCreateWriterCredentialsTimeout()
     {
         $result = $this->client->getCredentials("writer");
@@ -173,10 +153,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         }
     }
 
-
-    /**
-     *
-     */
     public function testGetCredentials()
     {
         $result = $this->client->getCredentials();
@@ -197,9 +173,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($id);
     }
 
-    /**
-     *
-     */
     public function testGetExistingCredentials()
     {
         $this->assertFalse($this->client->getExistingCredentials());
@@ -218,18 +191,13 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($result["id"]);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
     public function testGetCredentialsException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->getCredentialsById("123456");
     }
 
-    /**
-     *
-     */
     public function testKillProcesses()
     {
         $this->markTestSkipped(
@@ -245,19 +213,13 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->client->dropCredentials($id);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
-
     public function testKillProcessesException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->killProcesses("123456");
     }
 
-    /**
-     *
-     */
     public function testDropCredentials()
     {
         $result = $this->client->getCredentials();
@@ -283,18 +245,13 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         odbc_close($conn);
     }
 
-    /**
-     * @expectedException Keboola\Provisioning\CredentialsNotFoundException
-     * @expectedExceptionMessage Credentials not found.
-     */
     public function testDropCredentialsException()
     {
+        $this->expectException(CredentialsNotFoundException::class);
+        $this->expectExceptionMessage('Credentials not found.');
         $this->client->dropCredentials("123456");
     }
 
-    /**
-     *
-     */
     public function testDropWorkspace()
     {
         $result = $this->client->getCredentials();
@@ -308,9 +265,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         $this->assertNotEquals($result["credentials"]["workspaceId"], $workspaceId);
     }
 
-    /**
-     *
-     */
     public function testExtendCredentials()
     {
         $result = $this->client->getCredentials();
@@ -321,7 +275,6 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
         }
         $this->client->dropCredentials($result["id"]);
     }
-
 
     /**
      * @param $credentials
