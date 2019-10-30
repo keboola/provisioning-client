@@ -7,3 +7,4 @@ snowflake_linux_x8664_odbc.tgz
 .env
 composer.phar
 /snowflake_odbc
+.phpunit.result.cache
