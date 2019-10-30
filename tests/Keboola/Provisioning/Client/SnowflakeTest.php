@@ -144,9 +144,9 @@ class Keboola_ProvisioningClient_SnowflakeTest extends \ProvisioningTestCase
             $this->fail("Query didn't time out.");
         } catch(Warning $e) {
             if (strpos($e->getMessage(), 'SFExecuteQueryTimeout') !== false) {
-                $this->assertContains("SFExecuteQueryTimeout", $e->getMessage());
+                $this->assertStringContainsString("SFExecuteQueryTimeout", $e->getMessage());
             } else {
-                $this->assertContains("timeout", $e->getMessage());
+                $this->assertStringContainsString("timeout", $e->getMessage());
             }
         } finally {
             odbc_close($conn);
