@@ -11,7 +11,7 @@ use Keboola\Provisioning\Client;
 
 class Keboola_ProvisioningClient_MysqlTest extends \ProvisioningTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = new Client("mysql", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
     }

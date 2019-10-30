@@ -12,7 +12,7 @@ use Keboola\Provisioning\Client;
 class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTestCase
 {
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("redshift-workspace", "sandbox", PROVISIONING_API_TOKEN);
@@ -21,7 +21,7 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         \ProvisioningTestCase::cleanUp("redshift-workspace", "writer", PROVISIONING_API_TOKEN);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         // PRE cleanup
         \ProvisioningTestCase::cleanUp("redshift-workspace", "sandbox", PROVISIONING_API_TOKEN);
@@ -30,12 +30,14 @@ class Keboola_ProvisioningClient_RedshiftWorkspaceTest extends \ProvisioningTest
         \ProvisioningTestCase::cleanUp("redshift-workspace", "writer", PROVISIONING_API_TOKEN);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = new Client("redshift-workspace", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL);
     }
 
-    public function tearDown() {
+    public function tearDown(): void
+    {
+
     }
 
     /**
