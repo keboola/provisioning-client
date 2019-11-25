@@ -6,19 +6,19 @@ use Keboola\Provisioning\Client;
 
 class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         // PRE cleanup
         \ProvisioningTestCase::cleanUpAsync("docker", "jupyter", PROVISIONING_API_TOKEN);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         // PRE cleanup
         \ProvisioningTestCase::cleanUpAsync("docker", "jupyter", PROVISIONING_API_TOKEN);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = new Client("docker", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL, SYRUP_QUEUE_URL);
     }
