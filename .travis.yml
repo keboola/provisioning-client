@@ -9,7 +9,7 @@ before_install:
   - docker -v
   - docker-compose  -v
   - docker-compose build
-  - docker-compose run --rm tests
+  - travis_wait docker-compose run --rm tests
 
 deploy:
   provider: script
