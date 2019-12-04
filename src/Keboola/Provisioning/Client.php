@@ -237,6 +237,20 @@ class Client
         return $response;
     }
 
+    public function loadData($id, $input)
+    {
+        try {
+            $response = $this->syrupClient->runAsyncAction(
+                "async/docker/" . $id . "/input",
+                "POST",
+                ["body" => ["input" => $input]]
+            );
+        } catch (ClientException $e) {
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
+        }
+        return $response;
+    }
+
     /**
 	 * @param string $type
 	 * @return mixed
