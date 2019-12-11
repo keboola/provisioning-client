@@ -76,20 +76,17 @@ class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
     {
         $result = $this->client->getCredentialsAsync("jupyter");
 
-        $response = $this->client->unloadData($result['id'], 'output: {
-            tables: [
-                {
-                    source: "source.csv",
-                    destination => "in.c-sandbox.test",
-                }
-            ]
-        }');
-
-        $this->assertArrayHasKey('id', $response);
-        $this->assertArrayHasKey('component', $response);
-        $this->assertArrayHasKey('command', $response);
-        $this->assertArrayHasKey('status', $response);
-        $this->assertEquals('output', $response['command']);
-        $this->assertEquals('success', $response['status']);
+        try {
+            $this->client->unloadData($result['id'], [
+                'tables' => [
+                    [
+                        'source' => 'source.csv',
+                        'destination' => 'in.c-sandbox.test'
+                    ]
+                ]
+            ]);
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            $this->assertEquals(404, $e->getCode());
+        }
     }
 }

@@ -246,7 +246,7 @@ class Client
                 ["body" => ["input" => $input]]
             );
         } catch (ClientException $e) {
-            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), $e->getCode(), $e);
         }
         return $response;
     }
@@ -260,7 +260,7 @@ class Client
                 ["body" => ["output" => $output]]
             );
         } catch (ClientException $e) {
-            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), $e->getCode(), $e);
         }
         return $response;
     }
