@@ -470,6 +470,25 @@ Asynchronously load data to the docker sandbox
 
             X-StorageApi-Token: 123456
 
+    + Body
+
+                {
+                    "output": {
+                        "tables": [
+                            {
+                                "source": "file-in-sandbox.csv",
+                                "destination": "out.c-bucket.table"
+                            }
+                        ],
+                        "files": [
+                            {
+                                "source": "my-test-file.json"
+                                "tags": ["myTag", "sandboxTag"]
+                            }
+                        ]
+                    }
+                }
+
 + Response 200 (application/json)
 
         {
