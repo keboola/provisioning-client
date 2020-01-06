@@ -453,3 +453,46 @@ Asynchronously load data to the Docker sandbox
             "url": "https://syrup.us-east-01.keboola-testing.com/queue/job/206298221",
             "status": "waiting"
         }
+
+## Output data Async [/async/docker/{credentials_id}/output]
+
++ Parameters
+    + credentials_id(required, int) - ID of the credentials
+
+### Output Data Async [POST]
+Asynchronously load data to the docker sandbox
+
+#### Attributes
++ output (array) - sandbox output mapping containing tables and files fetched from the sandbox. Definition follows the [common schema](https://developers.keboola.com/extend/common-interface/config-file/#output-mapping--basic)
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+
+    + Body
+
+                {
+                    "output": {
+                        "tables": [
+                            {
+                                "source": "file-in-sandbox.csv",
+                                "destination": "out.c-bucket.table"
+                            }
+                        ],
+                        "files": [
+                            {
+                                "source": "my-test-file.json"
+                                "tags": ["myTag", "sandboxTag"]
+                            }
+                        ]
+                    }
+                }
+
++ Response 200 (application/json)
+
+        {
+            "id": 43,
+            "url": "https://syrup.us-east-01.keboola-testing.com/queue/job/206298221",
+            "status": "waiting"
+        }

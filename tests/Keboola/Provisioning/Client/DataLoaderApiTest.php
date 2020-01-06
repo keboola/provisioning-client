@@ -71,4 +71,28 @@ class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
         $this->assertEquals('input', $response['command']);
         $this->assertEquals('success', $response['status']);
     }
+
+    public function testOutputData()
+    {
+        $result = $this->client->getCredentialsAsync("jupyter");
+
+        $response = $this->client->unloadData($result['id'], [
+            'tables' => [
+                [
+                    'source' => 'source.csv',
+                    'destination' => 'in.c-sandbox.test'
+                ]
+            ]
+        ]);
+        // since there is no data in the sandbox output folder this should 404
+        $this->assertEquals('error', $response['status']);
+        $this->assertContains(
+            'Loading data to storage failed: Client error:',
+            $response['result']['message']
+        );
+        $this->assertContains(
+            'resulted in a `404 Not Found`',
+            $response['result']['message']
+        );
+    }
 }

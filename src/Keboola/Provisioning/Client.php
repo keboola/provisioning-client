@@ -246,7 +246,21 @@ class Client
                 ["body" => ["input" => $input]]
             );
         } catch (ClientException $e) {
-            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), $e->getCode(), $e);
+        }
+        return $response;
+    }
+
+    public function unloadData($id, $output)
+    {
+        try {
+            $response = $this->syrupClient->runAsyncAction(
+                "async/docker/" . $id . "/output",
+                "POST",
+                ["body" => ["output" => $output]]
+            );
+        } catch (ClientException $e) {
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), $e->getCode(), $e);
         }
         return $response;
     }
