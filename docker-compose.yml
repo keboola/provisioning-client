@@ -6,8 +6,6 @@ services:
     build: .
     image: keboola/provisioning-client
     working_dir: /code
-    volumes:
-      - .:/code
     tty: true
     stdin_open: true
     command: composer ci
