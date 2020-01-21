@@ -265,6 +265,20 @@ class Client
         return $response;
     }
 
+    public function saveFile($id, $file)
+    {
+        try {
+            $response = $this->syrupClient->runAsyncAction(
+                "async/docker/" . $id . "/save",
+                "POST",
+                ["body" => ["file" => $file]]
+            );
+        } catch (ClientException $e) {
+            throw new Exception('Error from Provisioning API: ' . $e->getMessage(), $e->getCode(), $e);
+        }
+        return $response;
+    }
+
     /**
 	 * @param string $type
 	 * @return mixed

@@ -6,10 +6,12 @@ use Keboola\Csv\CsvFile;
 use Keboola\Provisioning\Client;
 use Keboola\StorageApi\Client as SapiClient;
 use Keboola\StorageApi\ClientException;
+use Keboola\StorageApi\Options\ListFilesOptions;
 use Keboola\Temp\Temp;
 
 class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
 {
+    const TEST_FILE_TAG = "provisioning-client-tests";
     /** @var SapiClient */
     private $sapiClient;
 
@@ -49,6 +51,19 @@ class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
         }
         $this->sapiClient->createTable('in.c-sandbox', 'test', $csv);
         unset($csv);
+    }
+
+    protected function removeTestFiles(): void
+    {
+        // remove uploaded test files
+        // let sapi finish it's work https://github.com/keboola/connection/issues/1925
+        sleep(2);
+        $testFiles = $this->sapiClient->listFiles(
+            (new ListFilesOptions())->setTags([self::TEST_FILE_TAG])
+        );
+        foreach ($testFiles as $testFile) {
+            $this->sapiClient->deleteFile($testFile['id']);
+        }
     }
 
     public function testInputData()
@@ -93,6 +108,28 @@ class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
         $this->assertContains(
             'resulted in a `404 Not Found`',
             $response['result']['message']
+        );
+    }
+
+    public function testSaveFile()
+    {
+        $this->removeTestFiles();
+        $result = $this->client->getCredentialsAsync("jupyter");
+        $response = $this->client->saveFile($result['id'], [
+                "source" => "notebook.ipynb",
+                "tags" => [self::TEST_FILE_TAG, "test-tag"]
+        ]);
+        $this->assertEquals('success', $response['status']);
+
+        $listOptions = new ListFilesOptions();
+        $listOptions->setTags([self::TEST_FILE_TAG]);
+        sleep(1);
+        $files = $this->sapiClient->listFiles($listOptions);
+        $this->assertCount(1, $files);
+        $this->assertEquals('notebook.ipynb', $files[0]['name']);
+        $this->assertEquals(
+            [self::TEST_FILE_TAG, 'test-tag', 'jupyter_workspace'],
+            $files[0]['tags']
         );
     }
 }

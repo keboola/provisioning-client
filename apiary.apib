@@ -496,3 +496,38 @@ Asynchronously load data to the docker sandbox
             "url": "https://syrup.us-east-01.keboola-testing.com/queue/job/206298221",
             "status": "waiting"
         }
+
+## Save state file Async [/async/docker/{credentials_id}/save]
+
++ Parameters
+    + credentials_id(required, int) - ID of the credentials
+
+### Output Data Async [POST]
+Asynchronously load state file to keboola storage
+
+#### Attributes
++  file (object) - an object with the following properties:
++  source (string) - file name of the state file.  if not in datadir, provide relative path from datadir
++  tags (array) - list of tags for the uploaded file
+
++ Request
+    + Headers
+
+            X-StorageApi-Token: 123456
+
+    + Body
+
+                {
+                    "file": {
+                        "source": "my-notebook.ipynb",
+                        "tags": ["myTag", "sandboxTag"]
+                    }
+                }
+
++ Response 200 (application/json)
+
+        {
+            "id": 43,
+            "url": "https://syrup.us-east-01.keboola-testing.com/queue/job/206298221",
+            "status": "waiting"
+        }
