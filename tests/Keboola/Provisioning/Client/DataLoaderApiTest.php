@@ -7,6 +7,7 @@ use Keboola\Provisioning\Client;
 use Keboola\StorageApi\Client as SapiClient;
 use Keboola\StorageApi\ClientException;
 use Keboola\StorageApi\Options\ListFilesOptions;
+use Keboola\StorageApi\Options\FileUploadOptions;
 use Keboola\Temp\Temp;
 
 class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
@@ -131,5 +132,29 @@ class Keboola_ProvisioningClient_DataLoaderApiTest extends \ProvisioningTestCase
             [self::TEST_FILE_TAG, 'test-tag', 'jupyter_workspace'],
             $files[0]['tags']
         );
+    }
+
+    public function testLoadFile()
+    {
+        $this->removeTestFiles();
+        $result = $this->client->getCredentialsAsync("jupyter");
+        $fileOptions = new FileUploadOptions();
+        $fileOptions->setTags([self::TEST_FILE_TAG]);
+        $fileId = $this->sapiClient->uploadFile(__DIR__ . '/../../../data/test.ipynb', $fileOptions);
+
+        $response = $this->client->loadFile(
+            $result['id'],
+            [
+                'id' => $fileId,
+                'name' => 'test.ipynb'
+            ]
+        );
+
+        $this->assertArrayHasKey('id', $response);
+        $this->assertArrayHasKey('component', $response);
+        $this->assertArrayHasKey('command', $response);
+        $this->assertArrayHasKey('status', $response);
+        $this->assertEquals('load', $response['command']);
+        $this->assertEquals('success', $response['status']);
     }
 }
