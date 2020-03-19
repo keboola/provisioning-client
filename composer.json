@@ -15,7 +15,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Keboola\\Provisioning\\Tests\\": "tests/Keboola/Provisioning/Client"
+            "Keboola\\Provisioning\\Tests\\": "tests/Keboola/Provisioning/Client",
+            "Keboola\\Provisioning\\Tests\\Azure\\": "tests/Azure"
         }
     },
     "require-dev": {
