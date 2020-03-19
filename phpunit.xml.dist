@@ -10,11 +10,7 @@
          bootstrap="bootstrap.php">
 
 	<testsuite name="Provisioning Client Test Suite">
-		<directory>tests/Provisioning/Client</directory>
-	</testsuite>
-
-	<testsuite name="Provisioning Client Test Suite for Azure">
-		<directory>tests/Azure</directory>
+		<directory>tests/Keboola/Provisioning/Client</directory>
 	</testsuite>
 
 </phpunit>

@@ -13,18 +13,18 @@ class JupyterTest extends \ProvisioningTestCase
     public static function setUpBeforeClass(): void
     {
         // PRE cleanup
-        \ProvisioningTestCase::cleanUpAsync("docker", "jupyter", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUpAsync("kubernetes", "jupyter", PROVISIONING_API_TOKEN);
     }
 
     public static function tearDownAfterClass(): void
     {
         // PRE cleanup
-        \ProvisioningTestCase::cleanUpAsync("docker", "jupyter", PROVISIONING_API_TOKEN);
+        \ProvisioningTestCase::cleanUpAsync("kubernetes", "jupyter", PROVISIONING_API_TOKEN);
     }
 
     public function setUp(): void
     {
-        $this->client = new Client("docker", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL, SYRUP_QUEUE_URL);
+        $this->client = new Client("kubernetes", PROVISIONING_API_TOKEN, "ProvisioningApiTest", PROVISIONING_API_URL, SYRUP_QUEUE_URL);
     }
 
     /**
@@ -92,7 +92,7 @@ class JupyterTest extends \ProvisioningTestCase
         $config->setConfigurationId($configData['id']);
         $row = new ConfigurationRow($config);
         $row->setConfiguration([
-            "backend" => "docker",
+            "backend" => "kubernetes",
             "description" => "Test configuration",
             "type" => "python",
             "packages" => [],
