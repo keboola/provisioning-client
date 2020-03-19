@@ -12,7 +12,7 @@
          bootstrap="bootstrap.php">
 
 	<testsuite name="Provisioning Client Test Suite">
-		<directory>tests</directory>
+		<directory>tests/Provisioning/Client</directory>
 	</testsuite>
 
 	<logging>
