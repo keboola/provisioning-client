@@ -3,6 +3,7 @@ namespace Keboola\Provisioning\Tests\Azure;
 
 require_once ROOT_PATH . "/tests/Test/ProvisioningTestCase.php";
 
+use Guzzle\Http\Exception\ServerErrorResponseException;
 use Keboola\Provisioning\Client;
 use Keboola\StorageApi\Options\Components\Configuration;
 use Keboola\StorageApi\Options\Components\ConfigurationRow;
@@ -135,6 +136,11 @@ class JupyterTest extends \ProvisioningTestCase
             if (strpos($body, "Jupyter") > 0) {
                 return true;
             }
+        } catch (ServerErrorResponseException $e) {
+            if ($e->getCode() == 503) {
+                return false;
+            }
+            throw $e;
         } catch (\Guzzle\Http\Exception\CurlException $e) {
             if (strpos($e->getMessage(), "Failed to connect") !== false) {
                 return false;
