@@ -132,6 +132,7 @@ class Client
             if ($created["status"] == 'error') {
                 throw new Exception('Error getting credentials: ' . $created["result"]["message"]);
             }
+            sleep(15);
             $response = $this->getCredentialsByIdRequest($created["result"]["credentials"]["id"]);
         } catch (ClientException $e) {
             throw new Exception('Error from Provisioning API: ' . $e->getMessage(), null, $e);
