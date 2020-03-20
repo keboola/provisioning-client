@@ -14,3 +14,18 @@ services:
       - PROVISIONING_API_URL
       - SYRUP_QUEUE_URL
       - PROVISIONING_API_TOKEN
+
+  dev:
+    build: .
+    image: keboola/provisioning-client
+    working_dir: /code
+    tty: true
+    stdin_open: true
+    command: composer ci
+    volumes:
+    - ./:/code
+    environment:
+      - STORAGE_API_URL
+      - PROVISIONING_API_URL
+      - SYRUP_QUEUE_URL
+      - PROVISIONING_API_TOKEN
