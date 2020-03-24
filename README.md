@@ -101,7 +101,7 @@ docker-compose build
 Run tests with following command.
 
 ```
-docker-compose run --rm php /code/vendor/bin/phpunit
+docker-compose run --rm tests /code/vendor/bin/phpunit
 ```
 
 Please note, for running Docker (RStudio / Jupyter) tests, you need to have async job queue processing running or 
