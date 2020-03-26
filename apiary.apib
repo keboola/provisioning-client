@@ -118,7 +118,7 @@ Get available credentials for the given `type`. Useful when credentials id is no
             "id": 49,
             "inUse": false,
             "touch": 1551197297,
-            "expiration": "2019-08-26T20:50:01+02:00",            
+            "expiration": "2019-08-26T20:50:01+02:00",
             "canExtend": false
         }
 
@@ -157,7 +157,7 @@ Get available credentials for the given `type`. Useful when credentials id is no
             },
             "id": 49,
             "touch": 1551197297,
-            "expiration": "2019-08-26T20:50:01+02:00",            
+            "expiration": "2019-08-26T20:50:01+02:00",
             "inUse": false,
             "canExtend": false
         }
@@ -218,7 +218,7 @@ Marks credentials as being used and extends the expiration timeout. If the backe
 
         {
             "touch": 1551197297,
-            "expiration": "2019-08-26T20:50:01+02:00",            
+            "expiration": "2019-08-26T20:50:01+02:00",
             "id": 1386700227
         }
 
@@ -236,10 +236,10 @@ Marks credentials as being used and extends the expiration timeout. If the backe
 
 ## Plain Sandbox Credentials Async [/async/{backend}]
 
-Async actions are used for Docker applications, to create or delete Docker containers. No other backend than `docker` is supported in async actions.
+Async actions are used for Docker applications, to create or delete Docker containers. No other backend than `docker` or `kubernetes` is supported in async actions.
 
 + Parameters
-    + backend (string) - only `docker` is allowed
+    + backend (string) - `docker` or `kubernetes` are allowed
 
 ### Create Credentials [POST]
 
@@ -257,7 +257,8 @@ You need to call Provisioning API again to obtain details of the credentials.
     "params": {
         "backend": "docker",
         "type": "rstudio",
-        "input": []
+        "input": [],
+        "size": "medium"
     },
     "result": {
         "status": "ok",
@@ -279,6 +280,7 @@ You need to call Provisioning API again to obtain details of the credentials.
 + type (required, string) - determines the type of the created credentials. Valid values are `rstudio`, `jupyter` and `julipyter`.
 + script (optional, string) - code preloaded to the sandobx.
 + input (optional, array) - sandbox input mapping containing tables and files preloaded into the sandbox. Definition follows the [common schema](https://github.com/keboola/docker-bundle/blob/master/Resources/schemas/configuration.json#L30)
++ size (optional, string) - sandbox size. Valid values are `small` (default), `medium` and `large`. Applicable only on kubernetes backend.
 
 + Request (application/json)
     + Headers
