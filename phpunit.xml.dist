@@ -9,8 +9,13 @@
          stopOnFailure="false"
          bootstrap="bootstrap.php">
 
-	<testsuite name="Provisioning Client Test Suite">
-		<directory>tests</directory>
-	</testsuite>
+	<testsuites>
+		<testsuite name="aws">
+			<directory>tests/Keboola/Provisioning/Client</directory>
+		</testsuite>
+		<testsuite name="azure">
+			<directory>tests/Azure</directory>
+		</testsuite>
+	</testsuites>
 
 </phpunit>
