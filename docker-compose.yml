@@ -5,8 +5,6 @@ services:
   tests:
     build: .
     image: keboola/provisioning-client
-    volumes:
-    - .:/code
     working_dir: /code
     tty: true
     stdin_open: true
