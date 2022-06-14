@@ -106,3 +106,7 @@ docker-compose run --rm tests /code/vendor/bin/phpunit
 
 Please note, for running Docker (RStudio / Jupyter) tests, you need to have async job queue processing running or 
 run the `provisioning:devel:poll-jobs` command of the [provisioning-bundle](https://github.com/keboola/provisioning-bundle).
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
